@@ -53,7 +53,7 @@ public class BattleshipGame {
 		{
 			System.out.println("Wrong placement!The grid is 10*10,sorry!");
 		}
-		
+		mygrid2.shoot(5, 2);
 		//System.out.println(mygrid2.ships[5][4].isSunk());
 		
 		/*try {
