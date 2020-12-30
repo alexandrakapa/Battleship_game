@@ -33,25 +33,6 @@ public class Grid {
 			 
 			if (row > 9 || column + 4 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 			 
-				/*for (int i = column; i <  column + 5; i++)
-				{
-					if ((row==0 && ships[row+1][i].getLength()!=1) || (row!=0 && row!=9 && ships[row-1][i].getLength()!=1 && ships[row+1][i].getLength()!=1) || (row==9 && ships[row-1][i].getLength()!=1)) 
-					{
-						up_down=true;
-						break;
-						//throw new AdjacentTilesException("You cant place it here,there are adjacent ships!");
-					}
-				}
-				if (up_down==false) throw new AdjacentTilesException("You cant place it here,there are adjacent ships!");
-				else {
-				for (int i = 0; i< 3; i++)
-				{
-					if ((column==0 && ships[column+5][row-1+i].getLength()!=1) || (column+4==9 && ships[column-1][row-1+i].getLength()!=1) || (column!=0 && column+4!=9 && ships[column+5][row-1+i].getLength()!=1 && ships[column-1][row-1+i].getLength()!=1))
-					{
-						throw new AdjacentTilesException("You cant place it here,there are adjacent ships!");
-					}
-				}
-				}*/
 			for (int i = column ;i < column + new Carrier().getLength(); i++)
 					{
 				ships[row][i]=new Carrier();
