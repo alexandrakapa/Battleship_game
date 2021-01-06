@@ -9,15 +9,15 @@ public class Grid {
 	boolean [] types = new boolean[6]; //an array that holds what types of ships have been places -> eg if type[1]==true then we have already placed a carrier
 	public int points = 0; //the points the player has 
 	
+	
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 40; //we begin with 40 shots
+		shots = 20; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		types[0]=true; //We dont care about no ship
 	}
 	
-
 	
 	public void PlaceShip(int type, int row, int column, int orientation) throws OversizeException, OverlapTilesException,AdjacentTilesException,InvalidCountException{
 		//if (type==1) {throw new OversizeException();}
@@ -217,6 +217,7 @@ public class Grid {
 			if (c==ships[shrow][shcolumn].getLength()) {
 				System.out.println("You have sunken the ship!");
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
+				sunkenShips++; //the number of sunken ships
 				for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[frow][l].setSunk(true);
 
@@ -253,6 +254,7 @@ public class Grid {
 			if (c==ships[shrow][shcolumn].getLength()) {
 				System.out.println("You have sunken the ship!");
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
+				sunkenShips++; //the number of sunken ships
 				for (int l=frow;l<frow+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[l][fcolumn].setSunk(true);
 
@@ -260,10 +262,101 @@ public class Grid {
 			
 		}
 		
-		if (shots == 0) System.out.println("The game has ended!");
+		if (shots == 0) System.out.println("This player doesnt have any moves left!");
 	}
 
+
+
+void computerShoot()  //function when computer shoots
+{ 
+	int shrow = (int)(Math.random() * 10);
+    int shcolumn = (int)(Math.random() * 10);
+    System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
+	shots--; //when the user plays he has one less shot
+	int i = shcolumn;
+	int j = shrow;
+	int c = 0; //we initialize a counter
+	int p = 0; //the specific spot of the ship that is hit
+	
+	if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
+		System.out.println("I am sorry,this is an empty spot!");
+	if (ships[shrow][shcolumn].getOrientation() == 1)
+	{
+		while (i != ships[shrow][shcolumn].getColumn()) 	//we try to find the first column of the ship
+		{
+			i--;
+			p++;
+			
+		}
+		if (ships[shrow][shcolumn].hit[p] == true )
+			System.out.println("Oh no,it is already hit!");
+		else {
+		System.out.println("Congrats!You hit a ship!");
+		points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
+		ships[shrow][i].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
+		}
+		
+		int frow = shrow;   //the row and the column of the bow of the ship
+		int fcolumn = i;
+		for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
+		{
+			if (ships[shrow][i].hit[k]==false)    //we want to see if the ship is sunk
+			{										//we do that by checking the hit array
+				break;
+			}
+			c++;
+		}
+		if (c==ships[shrow][shcolumn].getLength()) {
+			System.out.println("You have sunken the ship!");
+			sunkenShips++; //the number of sunken ships
+			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
+			for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
+				ships[frow][l].setSunk(true);
+
+			} 
+		
+	}
+	
+	if (ships[shrow][shcolumn].getOrientation() == 2)
+	{
+		while (j != ships[shrow][shcolumn].getRow()) 	//we try to find the row column of the ship
+		{
+			j--;
+			p++;
+			
+		}
+		if (ships[shrow][shcolumn].hit[p] == true )
+			System.out.println("Oh no,it is already hit!");
+		else {
+		System.out.println("Congrats!You hit a ship!");
+		points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
+		ships[j][shcolumn].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
+			}
+		
+		int frow = j;   //the row and the column of the bow of the ship
+		int fcolumn = shcolumn;
+		for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
+		{
+			if (ships[j][shcolumn].hit[k]==false)    //we want to see if the ship is sunk
+			{										//we do that by checking the hit array
+				break;
+			}
+			c++;
+		}
+		if (c==ships[shrow][shcolumn].getLength()) {
+			System.out.println("You have sunken the ship!");
+			sunkenShips++; //the number of sunken ships
+			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
+			for (int l=frow;l<frow+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
+				ships[l][fcolumn].setSunk(true);
+
+			} 
+		
+	}
+	
+	if (shots == 0) System.out.println("This player doesnt have any moves left!");
 }
 
+}
 
 	
