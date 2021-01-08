@@ -206,11 +206,11 @@ public class Grid {
 				p++;
 				
 			}
-			if (ships[shrow][shcolumn].hit[p] == true )
+			if (ships[shrow][i].hit[p] == true )
 				System.out.println("Oh no,it is already hit!");
 			
 			else {
-			System.out.println("Congrats!You hit a ship!");
+			System.out.println("Congrats!You hit a ship!"); 
 			
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 			ships[shrow][i].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
@@ -245,7 +245,7 @@ public class Grid {
 				p++;
 				
 			}
-			if (ships[shrow][shcolumn].hit[p] == true )
+			if (ships[j][shcolumn].hit[p] == true )
 				System.out.println("Oh no,it is already hit!");
 			else {
 			System.out.println("Congrats!You hit a ship!");
@@ -279,7 +279,7 @@ public class Grid {
 
 
 
-void computerShoot()  //function when computer shoots
+	void computerShoot()  //function when computer shoots
 { 
 	
     int shrow;
@@ -346,7 +346,7 @@ void computerShoot()  //function when computer shoots
 			p++;
 			
 		}
-		if (ships[shrow][shcolumn].hit[p] == true )
+		if (ships[shrow][i].hit[p] == true )
 			System.out.println("Oh no,it is already hit!");
 		
 		else {
@@ -410,7 +410,7 @@ void computerShoot()  //function when computer shoots
 			p++;
 			
 		}
-		if (ships[shrow][shcolumn].hit[p] == true )
+		if (ships[j][shcolumn].hit[p] == true )
 			System.out.println("Oh no,it is already hit!");
 		
 		else {
