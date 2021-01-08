@@ -8,5 +8,8 @@ public class OverlapTilesException extends Exception{
 	{
 		System.out.println(message);
 	}
-	
+	public OverlapTilesException()
+	{
+		super();
+	}
 }

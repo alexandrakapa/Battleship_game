@@ -8,5 +8,9 @@ public class AdjacentTilesException extends Exception{
 	{
 		System.out.println(message);
 	}
+	public AdjacentTilesException()
+	{
+		super();
+	}
 	
 }

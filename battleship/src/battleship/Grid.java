@@ -28,7 +28,7 @@ public class Grid {
 	
 	
 	public void PlaceShip(int type, int row, int column, int orientation) throws OversizeException, OverlapTilesException,AdjacentTilesException,InvalidCountException{
-		if (types[type]==true) throw new InvalidCountException("Ooops!You have already placed a ship of type " + type + "!");
+		if (types[type]==true) throw new InvalidCountException();//"Ooops!You have already placed a ship of type " + type + "!");
 		int frow = row;  //we keep the variables because they change
 		int fcolumn = column;  
 		switch(type) {
@@ -37,23 +37,23 @@ public class Grid {
 		{
 			for (int i = 0; i < 5; i++) //we have to check if it overlaps another ship and if yes throw error
 			{
-				if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException();//not empty spot,throw exception
 			}
 			
 			for (int i = 0; i < 5; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 			{
-				if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles
-				else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles
+				if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the above tiles
+				else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the down tiles
 			}
 			
 			for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 			{
-				if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles)
-				else if (column != 9 && ships[row+i-1][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles)
+				if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles)
+				else if (column != 9 && ships[row+i-1][column+5].getLength() != 1) throw new AdjacentTilesException();//we check the right tiles)
 			}
 			
 			 
-			if (row > 9 || column + 4 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+			if (row > 9 || column + 4 > 9) throw new OversizeException(); //out of grid,throw exception
 			 
 			for (int i = column ;i < column + new Carrier().getLength(); i++)
 					{
@@ -69,24 +69,24 @@ public class Grid {
 			
 			for (int i = 0; i < 5; i++) //we have to check if it overlaps another ship and if yes throw error
 			{
-				if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException();//not empty spot,throw exception
 			}
 			
 
 			for (int i = 0; i < 5; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 			{
-				if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles
-				else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles
+				if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles
+				else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException();//we check the right tiles
 			}
 			
 			for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 			{
-				if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles)
-				else if (row != 9 && ships[row+1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles)
+				if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles)
+				else if (row != 9 && ships[row+5][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the down tiles)
 			}
 			
 			
-			if (column > 9 || row + 4 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+			if (column > 9 || row + 4 > 9) throw new OversizeException(); //out of grid,throw exception
 			
 			for (int i = row; i < row + new Carrier().getLength(); i++)
 				{
@@ -105,23 +105,23 @@ public class Grid {
 				
 				for (int i = 0; i < 4; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 		
 				for (int i = 0; i < 4; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles
-					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles
+					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles
+					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException(); //we check the down tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles)
-					else if (column != 9 && ships[row+i-1][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles)
+					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles)
+					else if (column != 9 && ships[row+i-1][column+4].getLength() != 1) throw new AdjacentTilesException(); //we check the right tiles)
 				}
 				
 				
-				if (row > 9 || column + 3 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
+				if (row > 9 || column + 3 > 9) throw new OversizeException();//"Wrong placement!The grid is 10*10,sorry!");
 				
 				for (int i = column ;i < column + new Battleship().getLength(); i++)
 						{
@@ -136,23 +136,23 @@ public class Grid {
 			{
 				for (int i = 0; i < 4; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 				
 				for (int i = 0; i < 4; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles
-					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles
+					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles
+					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException();//we check the right tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles)
-					else if (row != 9 && ships[row+1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles)
+					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles)
+					else if (row != 9 && ships[row+4][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the down tiles)
 				}
 				
 				
-				if (column > 9 || row + 3 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+				if (column > 9 || row + 3 > 9) throw new OversizeException(); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Battleship().getLength(); i++)
 					{
@@ -171,24 +171,24 @@ public class Grid {
 				
 				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException();//not empty spot,throw exception
 				}
 
 
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles
-					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles
+					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the above tiles
+					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the down tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles)
-					else if (column != 9 && ships[row+i-1][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles)
+					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles)
+					else if (column != 9 && ships[row+i-1][column+3].getLength() != 1) throw new AdjacentTilesException();//we check the right tiles)
 				}
 				
 				
-				if (row > 9 || column + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
+				if (row > 9 || column + 2 > 9) throw new OversizeException();
 				
 				for (int i = column ;i < column + new Cruiser().getLength(); i++)
 						{
@@ -203,23 +203,23 @@ public class Grid {
 			{
 				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles
-					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles
+					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles
+					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException(); //we check the right tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles)
-					else if (row != 9 && ships[row+1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles)
+					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles)
+					else if (row != 9 && ships[row+3][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the down tiles)
 				}
 				
 				
-				if (column > 9 || row + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+				if (column > 9 || row + 2 > 9) throw new OversizeException(); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Cruiser().getLength(); i++)
 					{
@@ -237,23 +237,23 @@ public class Grid {
 			{
 				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles
-					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles
+					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the above tiles
+					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the down tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles)
-					else if (column != 9 && ships[row+i-1][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles)
+					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException();//we check the left tiles)
+					else if (column != 9 && ships[row+i-1][column+3].getLength() != 1) throw new AdjacentTilesException(); //we check the right tiles)
 				}
 				
 				
-				if (row > 9 || column + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
+				if (row > 9 || column + 2 > 9) throw new OversizeException();
 				
 				for (int i = column ;i < column + new Submarine().getLength() ; i++)
 						{
@@ -268,23 +268,23 @@ public class Grid {
 			{
 				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException();//not empty spot,throw exception
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles
-					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles
+					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException();//we check the left tiles
+					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException(); //we check the right tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles)
-					else if (row != 9 && ships[row+1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles)
+					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException();//we check the above tiles)
+					else if (row != 9 && ships[row+3][column+i-1].getLength() != 1) throw new AdjacentTilesException();//we check the down tiles)
 				}
 				
 				
-				if (column > 9 || row + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+				if (column > 9 || row + 2 > 9) throw new OversizeException(); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Submarine().getLength() ; i++)
 					{
@@ -302,24 +302,24 @@ public class Grid {
 			{
 				for (int i = 0; i < 2; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 				
 
 				for (int i = 0; i < 2; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles
-					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles
+					if (row != 0 && ships[row-1][column+i].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles
+					else if (row != 9 && ships[row+1][column+i].getLength() != 1) throw new AdjacentTilesException();//we check the down tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles)
-					else if (column != 9 && ships[row+i-1][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles)
+					if (column != 0 && ships[row+i-1][column-1].getLength() != 1) throw new AdjacentTilesException();//we check the left tiles)
+					else if (column != 9 && ships[row+i-1][column+2].getLength() != 1) throw new AdjacentTilesException();//we check the right tiles)
 				}
 				
 				
-				if (row > 9 || column + 1 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
+				if (row > 9 || column + 1 > 9) throw new OversizeException();
 				
 				for (int i = column ;i < column + new Destroyer().getLength() ; i++)
 						{
@@ -334,23 +334,23 @@ public class Grid {
 			{
 				for (int i = 0; i < 2; i++) //we have to check if it overlaps another ship and if yes throw error
 				{
-					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException(); //not empty spot,throw exception
 				}
 				
 				for (int i = 0; i < 2; i++) //we have to check if it is adjacent to another ship(left and right) and if yes throw error
 				{
-					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the left tiles
-					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the right tiles
+					if (column != 0 && ships[row+i][column-1].getLength() != 1) throw new AdjacentTilesException(); //we check the left tiles
+					else if (column != 9 && ships[row+i][column+1].getLength() != 1) throw new AdjacentTilesException(); //we check the right tiles
 				}
 				
 				for (int i = 0; i < 3; i++) //we have to check if it is adjacent to another ship(above and down) and if yes throw error
 				{
-					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the above tiles)
-					else if (row != 9 && ships[row+1][column+i-1].getLength() != 1) throw new AdjacentTilesException("You must keep a distance of a line -covid- here,sorry!"); //we check the down tiles)
+					if (row != 0 && ships[row-1][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the above tiles)
+					else if (row != 9 && ships[row+2][column+i-1].getLength() != 1) throw new AdjacentTilesException(); //we check the down tiles)
 				}
 				
 				
-				if (column > 9 || row + 1 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
+				if (column > 9 || row + 1 > 9) throw new OversizeException();//out of grid,throw exception
 				
 				for (int i = row; i < row + new Destroyer().getLength() ; i++)
 					{
@@ -367,10 +367,50 @@ public class Grid {
 	}
 
 
-	//public void computerPlaceShip() {
+	public void computerPlaceShip() {
+		int i = 5;
+		int c = 1; //we want a counter for the type of the ship
+		while ( i > 0) {
+		try    //place the players ships 		
+		{
+				
+				int row = (int) Math.floor(Math.random() * 10); //will return a number between 0 and 9
+				int column = (int) Math.floor(Math.random() * 10); //will return a number between 0 and 9
+				int orientation = (int) ( Math.random() * 2 + 1); // will return either 1 or 2
+				i--;
+				PlaceShip(c, row, column, orientation);
+				//System.out.println("Computer has placed ship (" + c + "," + row + "," + column + "," + orientation + ")");
+				c++;
+			}
+
+			catch(OversizeException e)                       
+			{
+				i=i+1; //in order to place again
+			//	System.out.println("Wrong placement!The grid is 10*10,sorry!");
+			}
+			catch(OverlapTilesException o)
+			{
+				i=i+1; //in order to place again
+			//	System.out.println("There is another ship here,sorry!");
+			}		
+			catch(AdjacentTilesException a)
+			{
+				i=i+1; //in order to place again
+			//	System.out.println("You must keep a distance of a line -covid- here,sorry!");
+			}
+			catch(InvalidCountException k)
+			{
+				i=i+1; //in order to place again
+			//	System.out.println("Ooops!You have already placed a ship of this type!");
+			}
+			catch(ArrayIndexOutOfBoundsException a)
+			{
+				i=i+1; //in order to place again
+			//	System.out.println("Wrong placement!The grid is 10*10,sorry!");
+			}
+		}
 		
-		
-	//}
+	}
 	
 	
 	

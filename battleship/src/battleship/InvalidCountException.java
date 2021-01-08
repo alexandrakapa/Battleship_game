@@ -8,5 +8,8 @@ public class InvalidCountException extends Exception {
 	{
 		System.out.println(message);
 	}
-	
+	public InvalidCountException()
+	{
+		super();
+	}
 }
