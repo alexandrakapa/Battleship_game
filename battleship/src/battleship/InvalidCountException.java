@@ -4,10 +4,6 @@ import java.lang.Exception;
 
 public class InvalidCountException extends Exception {
 
-	public InvalidCountException(String message)
-	{
-		System.out.println(message);
-	}
 	public InvalidCountException()
 	{
 		super();

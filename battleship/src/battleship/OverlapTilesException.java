@@ -4,10 +4,6 @@ import java.lang.Exception;
 
 public class OverlapTilesException extends Exception{
 
-	public OverlapTilesException(String message)
-	{
-		System.out.println(message);
-	}
 	public OverlapTilesException()
 	{
 		super();

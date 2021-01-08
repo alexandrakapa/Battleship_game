@@ -4,10 +4,6 @@ import java.lang.Exception;
 
 public class AdjacentTilesException extends Exception{
 
-	public AdjacentTilesException(String message)
-	{
-		System.out.println(message);
-	}
 	public AdjacentTilesException()
 	{
 		super();
