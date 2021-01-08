@@ -18,14 +18,16 @@ public class BattleshipGame {
 	
 		Grid playerGrid = new Grid(); //Initialize the two grids
 		Grid computerGrid = new Grid();
+		int i = 5;
+		while ( i > 0) {
+		//for (int i = 0; i < 5; i++) {
 		try {   //place the players ships 
-			playerGrid.PlaceShip(1,7,0,1); //blue ship
-			playerGrid.PlaceShip(2,5,1,1); //purple
-			playerGrid.PlaceShip(3,6,6,2); //red
-			playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
-			playerGrid.PlaceShip(5,3,8,2); //green
-			/*
-			for (int i = 0; i < 5; i++)			//to read from stdin
+		//	playerGrid.PlaceShip(1,7,0,1); //blue ship
+		//	playerGrid.PlaceShip(2,5,1,1); //purple
+		//	playerGrid.PlaceShip(3,6,6,2); //red
+		//	playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
+		//	playerGrid.PlaceShip(5,3,8,2); //green
+			
 			{
 				Scanner in = new Scanner(System.in);
 				System.out.print("Enter the coordinations (type,row,column,orientation) of the place you want to place a ship at : ");
@@ -33,24 +35,36 @@ public class BattleshipGame {
 				int row = in.nextInt();
 				int column = in.nextInt();
 				int orientation = in.nextInt();
+				i--;
 				playerGrid.PlaceShip(type, row, column, orientation);
-			}*/
+				
+			}
 			
 		}
 			catch(OversizeException e)                       
-			{}
+			{
+				i=i+1; //in order to place again
+			}
 			catch(OverlapTilesException o)
-			{}
+			{
+				i=i+1; //in order to place again
+			}		
 			catch(AdjacentTilesException a)
-			{}
-			catch(InvalidCountException i)
-			{}
+			{
+				i=i+1; //in order to place again
+			}
+			catch(InvalidCountException k)
+			{
+				i=i+1; //in order to place again
+			}
 			catch(ArrayIndexOutOfBoundsException a)
 			{
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
+				i=i+1; //in order to place again
 			}
-		//System.out.println("Player has placed her ships!");
-		try {
+		}
+		System.out.println("Player has placed her ships!");
+	/*	try {
 			computerGrid.PlaceShip(1,8,4,1); //blue ship
 			computerGrid.PlaceShip(2,4,2,2); //purple
 			computerGrid.PlaceShip(3,3,8,2); //red
@@ -70,7 +84,7 @@ public class BattleshipGame {
 		{
 			System.out.println("Wrong placement!The grid is 10*10,sorry!");
 		}
-		
+		*/
 		/*
 		for (int j = 1; j < 6; j++)   //not always okay
 		{
@@ -97,19 +111,19 @@ public class BattleshipGame {
 		//long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
 		//if (r == 0) { //computer plays first
 			//System.out.println("Computer plays first");
-			while (computerGrid.shots != 0 && playerGrid.shots != 0) //each player has 40 moves
-			{
+		//	while (computerGrid.shots != 0 && playerGrid.shots != 0) //each player has 40 moves
+		//	{
 				// playerGrid.computerShoot(); //the computer shoots
-				 Scanner in = new Scanner(System.in);
-				 System.out.print("Enter the coordinations (x,y) of the place you want to shoot at : ");
-				 int row = in.nextInt();
-				 int column = in.nextInt();
-				computerGrid.shoot(row, column); //the player shoots
+		//		 Scanner in = new Scanner(System.in);
+		//		 System.out.print("Enter the coordinations (x,y) of the place you want to shoot at : ");
+		//		 int row = in.nextInt();
+		//		 int column = in.nextInt();
+		//		computerGrid.shoot(row, column); //the player shoots
 				//System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips);
-				System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips);
+		//		System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips);
 				//if (playerGrid.sunkenShips == 5 || computerGrid.sunkenShips == 5)
 				//	break;
-			}
+		//	}
 		//}
 		/*else if (r == 1) { //player plays first
 			//System.out.println("Player plays first");

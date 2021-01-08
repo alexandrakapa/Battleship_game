@@ -28,16 +28,18 @@ public class Grid {
 	
 	
 	public void PlaceShip(int type, int row, int column, int orientation) throws OversizeException, OverlapTilesException,AdjacentTilesException,InvalidCountException{
-		//if (type==1) {throw new OversizeException();}
 		if (types[type]==true) throw new InvalidCountException("Ooops!You have already placed a ship of type " + type + "!");
-		if (ships[row][column].getLength()!=1 ) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
-		//boolean up_down=false;
+		//if (ships[row][column].getLength()!=1 ) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
 		int frow = row;  //we keep the variables because they change
 		int fcolumn = column;  
 		switch(type) {
 		case 1:
 		 if (orientation == 1)
 		{
+			for (int i = 0; i < 5; i++) //we have to check if it overlaps another ship and if yes throw error
+			{
+				if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+			}
 			 
 			if (row > 9 || column + 4 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 			 
@@ -52,6 +54,12 @@ public class Grid {
 		}
 		else if (orientation == 2) 
 		{
+			
+			for (int i = 0; i < 5; i++) //we have to check if it overlaps another ship and if yes throw error
+			{
+				if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+			}
+			
 			if (column > 9 || row + 4 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 			
 			for (int i = row; i < row + new Carrier().getLength(); i++)
@@ -68,6 +76,12 @@ public class Grid {
 		case 2:
 			if (orientation == 1)
 			{
+				
+				for (int i = 0; i < 4; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (row > 9 || column + 3 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
 				
 				for (int i = column ;i < column + new Battleship().getLength(); i++)
@@ -81,6 +95,11 @@ public class Grid {
 			}
 			else if (orientation == 2) 
 			{
+				for (int i = 0; i < 4; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (column > 9 || row + 3 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Battleship().getLength(); i++)
@@ -97,6 +116,12 @@ public class Grid {
 		case 3:
 			if (orientation == 1)
 			{
+				
+				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (row > 9 || column + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
 				
 				for (int i = column ;i < column + new Cruiser().getLength(); i++)
@@ -110,6 +135,11 @@ public class Grid {
 			}
 			else if (orientation == 2) 
 			{
+				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (column > 9 || row + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Cruiser().getLength(); i++)
@@ -126,6 +156,11 @@ public class Grid {
 		case 4:
 			if (orientation == 1)
 			{
+				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (row > 9 || column + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
 				
 				for (int i = column ;i < column + new Submarine().getLength() ; i++)
@@ -139,6 +174,11 @@ public class Grid {
 			}
 			else if (orientation == 2) 
 			{
+				for (int i = 0; i < 3; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (column > 9 || row + 2 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Submarine().getLength() ; i++)
@@ -155,6 +195,11 @@ public class Grid {
 		case 5:
 			if (orientation == 1)
 			{
+				for (int i = 0; i < 2; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row][column + i].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (row > 9 || column + 1 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!");
 				
 				for (int i = column ;i < column + new Destroyer().getLength() ; i++)
@@ -168,6 +213,11 @@ public class Grid {
 			}
 			else if (orientation == 2) 
 			{
+				for (int i = 0; i < 2; i++) //we have to check if it overlaps another ship and if yes throw error
+				{
+					if (ships[row + i][column].getLength() != 1) throw new OverlapTilesException("There is another ship here,sorry!"); //not empty spot,throw exception
+				}
+				
 				if (column > 9 || row + 1 > 9) throw new OversizeException("Wrong placement!The grid is 10*10,sorry!"); //out of grid,throw exception
 				
 				for (int i = row; i < row + new Destroyer().getLength() ; i++)
