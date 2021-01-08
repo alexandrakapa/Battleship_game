@@ -8,14 +8,22 @@ public class Grid {
 	int sunkenShips; //the number of sunken ships ->max 5
 	boolean [] types = new boolean[6]; //an array that holds what types of ships have been places -> eg if type[1]==true then we have already placed a carrier
 	public int points = 0; //the points the player has 
-	
+	boolean firstsuccessfulhit=true; //we want to see the first successful hit of the computer
+	int [] start = new int[3]; //in this array we have keep the coordinates [x,y,z] of the first successful hit
+								//in order to use it form right to left and down to up
+	int [] immediateprev = new int[3]; //in this array we keep the coordinates [x,y,z] of the immediate previous hit
+	boolean prevright=false; //if prevright == true then we have a successful hit but we are now on the end of the ship 
+						//so we have to go back to the start
+	boolean goleft = false; //to know that we go left
+	boolean goup = false; //to know that we go up 
 	
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 20; //we begin with 40 shots
+		shots = 5; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
-		types[0]=true; //We dont care about no ship
+		types[0]=true; //We don't care about no ship
+		immediateprev[0] = 30; //we put a very big number to help us out
 	}
 	
 	
@@ -177,6 +185,8 @@ public class Grid {
 	}
 
 
+
+	
 	
 	void shoot(int shrow, int shcolumn)  //function to shoot at a ship given the position
 	{ 
@@ -198,8 +208,10 @@ public class Grid {
 			}
 			if (ships[shrow][shcolumn].hit[p] == true )
 				System.out.println("Oh no,it is already hit!");
+			
 			else {
 			System.out.println("Congrats!You hit a ship!");
+			
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 			ships[shrow][i].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
 			}
@@ -269,8 +281,35 @@ public class Grid {
 
 void computerShoot()  //function when computer shoots
 { 
-	int shrow = (int)(Math.random() * 10);
-    int shcolumn = (int)(Math.random() * 10);
+	
+    int shrow;
+    int shcolumn;
+	
+    if (immediateprev[0] < 10 && immediateprev[2] == 1 && goleft == false) //so it has been initialized and the orientation of the ship is 1
+    {
+    	shrow = immediateprev[0];
+    	shcolumn = immediateprev[1] + 1; //we move to the right
+    }
+    else if (immediateprev[0] < 10 && immediateprev[2] == 1 && goleft == true) //so it has been initialized and the orientation of the ship is 1
+    {
+    	shrow = immediateprev[0];
+    	shcolumn = immediateprev[1] - 1; //we move to the left
+    }
+    else if (immediateprev[0] < 10 && immediateprev[2] == 2 && goup == false) //so it has been initialized and the orientation of the ship is 2
+    {
+    	shrow = immediateprev[0] + 1; //we move down
+    	shcolumn = immediateprev[1]; 
+    }
+    else if (immediateprev[0] < 10 && immediateprev[2] == 2 && goup == true) //so it has been initialized and the orientation of the ship is 2
+    {
+    	shrow = immediateprev[0] - 1; //we move up
+    	shcolumn = immediateprev[1]; 
+    }
+    else {	//it hasn't been initialized yet -> i.e we haven't got a successful hit
+    	shrow = (int)(Math.random() * 10);
+        shcolumn = (int)(Math.random() * 10);
+    }
+    
     System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
 	shots--; //when the user plays he has one less shot
 	int i = shcolumn;
@@ -279,7 +318,26 @@ void computerShoot()  //function when computer shoots
 	int p = 0; //the specific spot of the ship that is hit
 	
 	if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
-		System.out.println("I am sorry,this is an empty spot!");
+	{
+		System.out.println("The computer has hit an empty spot!");
+		if (prevright == true) //that means that our previous hit was a success so now we are at the end of the ship
+		{
+			if (immediateprev[2] == 1) //the ship is horizontal so we move to start and go left
+			{
+				goleft = true; //now we go left
+				immediateprev[0] = start[0];
+				immediateprev[1] = start[1];
+				immediateprev[2] = start[2];
+			}
+			if (immediateprev[2] == 2) //the ship is vertical so we move to start and go up
+			{
+				goup = true; //now we go up
+				immediateprev[0] = start[0];
+				immediateprev[1] = start[1];
+				immediateprev[2] = start[2];
+			}
+		}
+	}
 	if (ships[shrow][shcolumn].getOrientation() == 1)
 	{
 		while (i != ships[shrow][shcolumn].getColumn()) 	//we try to find the first column of the ship
@@ -290,8 +348,28 @@ void computerShoot()  //function when computer shoots
 		}
 		if (ships[shrow][shcolumn].hit[p] == true )
 			System.out.println("Oh no,it is already hit!");
+		
 		else {
-		System.out.println("Congrats!You hit a ship!");
+		System.out.println("!!The computer has hit a ship!");
+		
+		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
+		{
+			start[0]=shrow; 
+			start[1]=shcolumn;
+			start[2]=ships[shrow][shcolumn].getOrientation(); //here it is the orientation
+			firstsuccessfulhit = false; //we found the first succes.we don't want to change the variables
+			immediateprev[0]=start[0];
+			immediateprev[1]=start[1];  //for now the immediate previous is the start point
+			immediateprev[2]=start[2];
+			prevright = true; //we had a successful hit so on the next hit the previous was a success
+		}
+		if (firstsuccessfulhit == false) //if it is not the first successful hit we still have to put the immediateprev values
+		{
+			immediateprev[0]=shrow;
+			immediateprev[1]=shcolumn;  //for now the immediate previous is the start point
+			immediateprev[2]=ships[shrow][shcolumn].getOrientation();
+			prevright = true; //we had a successful hit so on the next hit the previous was a success
+		}
 		points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 		ships[shrow][i].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
 		}
@@ -307,7 +385,12 @@ void computerShoot()  //function when computer shoots
 			c++;
 		}
 		if (c==ships[shrow][shcolumn].getLength()) {
-			System.out.println("You have sunken the ship!");
+			System.out.println("The computer has sunken the ship!");
+			firstsuccessfulhit = true; //now we try to find the next successful hit
+			immediateprev[0] = 30; //we want to make random shoots until we find a successful
+			prevright = false;
+			goleft = false;	//we want to go by default right and down
+			goup = false;
 			sunkenShips++; //the number of sunken ships
 			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 			for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
@@ -316,6 +399,8 @@ void computerShoot()  //function when computer shoots
 			} 
 		
 	}
+	
+	
 	
 	if (ships[shrow][shcolumn].getOrientation() == 2)
 	{
@@ -327,8 +412,28 @@ void computerShoot()  //function when computer shoots
 		}
 		if (ships[shrow][shcolumn].hit[p] == true )
 			System.out.println("Oh no,it is already hit!");
+		
 		else {
-		System.out.println("Congrats!You hit a ship!");
+		System.out.println("!!Congrats!You hit a ship!");
+		
+		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
+		{
+			start[0]=shrow; 
+			start[1]=shcolumn;
+			start[2]=ships[shrow][shcolumn].getOrientation(); //here it is the orientation
+			firstsuccessfulhit = false; //we found the first succes.we don't want to change the variables
+			immediateprev[0]=start[0];
+			immediateprev[1]=start[1];  //for now the immediate previous is the start point
+			immediateprev[2]=start[2];
+			prevright = true; //we had a successful hit so on the next hit the previous was a success
+		}
+		if (firstsuccessfulhit == false) //if it is not the first successful hit we still have to put the immediateprev values
+		{
+			immediateprev[0]=shrow;
+			immediateprev[1]=shcolumn;  //for now the immediate previous is the start point
+			immediateprev[2]=ships[shrow][shcolumn].getOrientation();
+			prevright = true; //we had a successful hit so on the next hit the previous was a success
+		}
 		points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 		ships[j][shcolumn].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
 			}
