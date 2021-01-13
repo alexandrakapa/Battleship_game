@@ -2,6 +2,8 @@ package battleship;
 
 import java.util.Arrays;
 
+
+
 public class Grid {
 	Ship[][] ships = new Ship [10][10]; //we have a 10*10 grid with ships/empty ships
 	public int shots; //shot of the user -> max 40
@@ -16,6 +18,10 @@ public class Grid {
 						//so we have to go back to the start
 	boolean goleft = false; //to know that we go left
 	boolean goup = false; //to know that we go up 
+	int [][] computerLastFive = new int [41][4]; //here we keep the shots of computer [i][0]: x coordinate,[i][1]:y coordinate,[i][2]:hit(1) or miss(0),[i][3]:type of ship
+	int m = 0; //counter for the above array
+	int [][] playerLastFive = new int [41][4]; //here we keep the shots of player [i][0]: x coordinate,[i][1]:y coordinate,[i][2]:hit(1) or miss(0),[i][3]:type of ship
+	int n = 0; //counter for the above array
 	
 	public Grid() {
 		for (Ship[] row : ships) 
@@ -379,7 +385,7 @@ public class Grid {
 				int orientation = (int) ( Math.random() * 2 + 1); // will return either 1 or 2
 				i--;
 				PlaceShip(c, row, column, orientation);
-				//System.out.println("Computer has placed ship (" + c + "," + row + "," + column + "," + orientation + ")");
+				System.out.println("Computer has placed ship (" + c + "," + row + "," + column + "," + orientation + ")");
 				c++;
 			}
 
@@ -416,6 +422,8 @@ public class Grid {
 	
 	void shoot(int shrow, int shcolumn)  //function to shoot at a ship given the position
 	{ 
+		playerLastFive[n][0]=shrow;
+		playerLastFive[n][1]=shcolumn;
 		shots--; //when the user plays he has one less shot
 		int i = shcolumn;
 		int j = shrow;
@@ -423,7 +431,11 @@ public class Grid {
 		int p = 0; //the specific spot of the ship that is hit
 		
 		if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
+		{
 			System.out.println("I am sorry,this is an empty spot!");
+			playerLastFive[n][2]=0; //we have a miss
+			playerLastFive[n][3]=0;
+		}
 		if (ships[shrow][shcolumn].getOrientation() == 1)
 		{
 			while (i != ships[shrow][shcolumn].getColumn()) 	//we try to find the first column of the ship
@@ -433,11 +445,16 @@ public class Grid {
 				
 			}
 			if (ships[shrow][i].hit[p] == true )
+				{
 				System.out.println("Oh no,it is already hit!");
+				playerLastFive[n][2]=0; //we have a miss
+				playerLastFive[n][3]=0;
+				}
 			
 			else {
 			System.out.println("Congrats!You hit a ship!"); 
-			
+			playerLastFive[n][2]=1; //we have a hit
+			playerLastFive[n][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 			ships[shrow][i].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
 			}
@@ -472,9 +489,15 @@ public class Grid {
 				
 			}
 			if (ships[j][shcolumn].hit[p] == true )
+				{
 				System.out.println("Oh no,it is already hit!");
+				playerLastFive[n][2]=0; //we have a miss
+				playerLastFive[n][3]=0;
+				}
 			else {
 			System.out.println("Congrats!You hit a ship!");
+			playerLastFive[n][2]=1; //we have a hit
+			playerLastFive[n][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
 			ships[j][shcolumn].hit[p] = true;		//hit array is about the first row/column of the ship,not the middle spots
 				}
@@ -499,15 +522,14 @@ public class Grid {
 				} 
 			
 		}
-		
+		n++;
 		if (shots == 0) System.out.println("This player doesnt have any moves left!");
 	}
 
 
-
+	
 	void computerShoot()  //function when computer shoots
 { 
-	
     int shrow;
     int shcolumn;
 	
@@ -536,6 +558,8 @@ public class Grid {
         shcolumn = (int)(Math.random() * 10);
     }
     
+    computerLastFive[m][0]=shrow;
+	computerLastFive[m][1]=shcolumn;
     System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
 	shots--; //when the user plays he has one less shot
 	int i = shcolumn;
@@ -546,6 +570,8 @@ public class Grid {
 	if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
 	{
 		System.out.println("The computer has hit an empty spot!");
+		computerLastFive[m][2]=0; //we have a miss
+		computerLastFive[m][3]=0;
 		if (prevright == true) //that means that our previous hit was a success so now we are at the end of the ship
 		{
 			if (immediateprev[2] == 1) //the ship is horizontal so we move to start and go left
@@ -573,11 +599,16 @@ public class Grid {
 			
 		}
 		if (ships[shrow][i].hit[p] == true )
+		{
 			System.out.println("Oh no,it is already hit!");
+			computerLastFive[m][2]=0; //we have a miss
+			computerLastFive[m][3]=0; 
+		}
 		
 		else {
 		System.out.println("!!The computer has hit a ship!");
-		
+		computerLastFive[m][2]=1; //we have a hit
+		computerLastFive[m][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
 		{
 			start[0]=shrow; 
@@ -637,11 +668,16 @@ public class Grid {
 			
 		}
 		if (ships[j][shcolumn].hit[p] == true )
+		{
 			System.out.println("Oh no,it is already hit!");
+			computerLastFive[m][2]=0; //we have a miss
+			computerLastFive[m][3]=0; 	
+		}
 		
 		else {
 		System.out.println("!!Congrats!You hit a ship!");
-		
+		computerLastFive[m][2]=1; //we have a hit
+		computerLastFive[m][3]=ships[shrow][shcolumn].getType();  
 		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
 		{
 			start[0]=shrow; 
@@ -684,8 +720,8 @@ public class Grid {
 			} 
 		
 	}
-	
-	if (shots == 0) System.out.println("This player doesnt have any moves left!");
+	m++;
+	if (shots == 0) System.out.println("Computer doesnt have any moves left!");
 }
 
 	
