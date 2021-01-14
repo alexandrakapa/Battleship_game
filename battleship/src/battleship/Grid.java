@@ -8,6 +8,7 @@ public class Grid {
 	Ship[][] ships = new Ship [10][10]; //we have a 10*10 grid with ships/empty ships
 	public int shots; //shot of the user -> max 40
 	int sunkenShips; //the number of sunken ships ->max 5
+	int aliveShips;
 	boolean [] types = new boolean[6]; //an array that holds what types of ships have been places -> eg if type[1]==true then we have already placed a carrier
 	public int points = 0; //the points the player has 
 	boolean firstsuccessfulhit=true; //we want to see the first successful hit of the computer
@@ -28,6 +29,7 @@ public class Grid {
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
 		shots = 5; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
+		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship
 		immediateprev[0] = 30; //we put a very big number to help us out
 	}
@@ -473,6 +475,7 @@ public class Grid {
 				System.out.println("You have sunken the ship!");
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
+				aliveShips--; //the number of alive ships
 				for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[frow][l].setSunk(true);
 
@@ -516,6 +519,7 @@ public class Grid {
 				System.out.println("You have sunken the ship!");
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
+				aliveShips--; //the number of alive ships
 				for (int l=frow;l<frow+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[l][fcolumn].setSunk(true);
 
@@ -649,6 +653,7 @@ public class Grid {
 			goleft = false;	//we want to go by default right and down
 			goup = false;
 			sunkenShips++; //the number of sunken ships
+			aliveShips--; //the number of alive ships
 			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 			for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 				ships[frow][l].setSunk(true);
@@ -713,6 +718,7 @@ public class Grid {
 		if (c==ships[shrow][shcolumn].getLength()) {
 			System.out.println("You have sunken the ship!");
 			sunkenShips++; //the number of sunken ships
+			aliveShips--; //the number of alive ships
 			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 			for (int l=frow;l<frow+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 				ships[l][fcolumn].setSunk(true);

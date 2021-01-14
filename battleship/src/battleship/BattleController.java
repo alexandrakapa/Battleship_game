@@ -4,13 +4,14 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.*;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 
 
 
@@ -19,6 +20,7 @@ public Button buttonid;
 public TextField row;	
 public TextField column;
 public Button shootButton;
+public Text compact,plact,compon,plapon,comhit,plahit,msg;
 //public Rectangle p00,p01,p02;
 //public GridPane pane;
 Rectangle [][] playergrid = new Rectangle[11][11]; //we use it for making the grid of the player
@@ -27,9 +29,13 @@ public Rectangle p00,p01,p02,p03,p04,p05,p06,p07,p08,p09,p10,p11,p12,p13,p14,p15
 public Rectangle p70,p71,p72,p73,p74,p75,p76,p77,p78,p79,p80,p81,p82,p83,p84,p85,p86,p87,p88,p89,p90,p91,p92,p93,p94,p95,p96,p97,p98,p99;
 public Rectangle c00,c01,c02,c03,c04,c05,c06,c07,c08,c09,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24,c25,c26,c27,c28,c29,c30,c31,c32,c33,c34,c35,c36,c37,c38,c39,c40,c41,c42,c43,c44,c45,c46,c47,c48,c49,c50,c51,c52,c53,c54,c55,c56,c57,c58,c59,c60,c61,c62,c63,c64,c65,c66,c67,c68,c69;
 public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85,c86,c87,c88,c89,c90,c91,c92,c93,c94,c95,c96,c97,c98,c99;
-int k=0;
-long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-
+int k = 0; //to know the computers moves
+double com_successful = 0; //to help us count the success rate for computer
+//long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
+long r = 1;
+int j = 0; //to know the players moves
+double pla_successful = 0; //to help us count the success rate for player
+double player_success_rate,computer_success_rate; //the percentages of successful hits
 
 Grid playerGrid = new Grid(); //Initialize the two grids
 Grid computerGrid = new Grid();
@@ -48,7 +54,7 @@ Grid computerGrid = new Grid();
 				playergrid[5][1+i].setFill(Color.VIOLET);
 			playerGrid.PlaceShip(3,6,6,2); //red
 			for (int i = 0;i < 3;i++)
-				playergrid[6+i][6].setFill(Color.RED);
+				playergrid[6+i][6].setFill(Color.DARKORANGE);
 			playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
 			for (int i = 0;i < 3;i++)
 				playergrid[1][1+i].setFill(Color.YELLOW);
@@ -109,12 +115,31 @@ Grid computerGrid = new Grid();
 		
 		System.out.println("Computer has placed his ships!");	
 		if (r == 1) //player plays first
+			{
 			System.out.println("Player plays first");
+			msg.setLayoutX(340);
+			msg.setFill(Color.DARKBLUE);
+			msg.setText("Player plays first!");
+			}
 		else if (r==0)  //computer plays first
 		{
 			System.out.println("Computer plays first");
 			playerGrid.computerShoot(); //the computer shoots
-			playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+			msg.setLayoutX(340);
+			msg.setFill(Color.DARKBLUE);
+			msg.setText("Computer plays first!");
+			if (playerGrid.computerLastFive[k][2] == 1) //then computer has a hit and musts make the playerGrid cell red
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
+				com_successful++; //we increment the counter of successful hits
+			}	
+			else //we have a miss
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+			}
+			computer_success_rate = Math.round((com_successful/(k+1))*100); //the success rate for the computer
+			comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
+			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
 			k++;
 		}
 	}
@@ -123,26 +148,63 @@ Grid computerGrid = new Grid();
 
 	public void ShootButtonClicked() {
 		if (r == 1) { //player plays first
-			
+			msg.setFill(Color.DODGERBLUE);
+			msg.setLayoutX(208);
 			String rowc = row.getText();
 			String columnc = column.getText();
 			int rowi = Integer.parseInt(rowc);
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
 			computerGrid.shoot(rowi, columni); //the player shoots
-			computergrid[rowi][columni].setFill(Color.BLACK);
+			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and musts make the computerGrid cell red
+			{
+				computergrid[rowi][columni].setFill(Color.DARKRED);
+				msg.setText("Your hit was succesful,congratulations!");
+				pla_successful++; //we increment the counter of successful hits
+			}
+			else {	//we have a miss
+				computergrid[rowi][columni].setFill(Color.BLACK);	
+				msg.setText("Your hit was unsuccesful,try again!");
+			}
 			row.setText("");
 			column.setText("");
 			playerGrid.computerShoot(); //the computer shoots
-			playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
-			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips);
-			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips);
+			if (playerGrid.computerLastFive[k][2] == 1) //then we have a hit and musts make the playerGrid cell red
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
+				com_successful++; //we increment the counter of successful hits
+			}	
+			else //we have a miss
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+			}
+			plact.setText("Player's active Ships: " + playerGrid.aliveShips ); //set the text for alive ships
+			compact.setText("Computer's active Ships: " + computerGrid.aliveShips);
+			plapon.setText("Player's points: " + computerGrid.points); //set the text for points
+			compon.setText("Computer's points: " + playerGrid.points);
+			computer_success_rate = Math.round((com_successful/(k+1))*100); //the success rate for the computer
+			player_success_rate = Math.round((pla_successful/(j+1))*100); //the success rate for the player
+			comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
+			plahit.setText("Player's hit rate: " + player_success_rate + "%");
+			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
+			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+player_success_rate);
 			k++;
+			j++;
 		}
 		else if (r==0) { //computer plays first
+			msg.setFill(Color.DODGERBLUE);
+			msg.setLayoutX(208);
 		if(k!=5) { //because the computer has started playing before
 			playerGrid.computerShoot(); //the computer shoots
-			playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+			if (playerGrid.computerLastFive[k][2] == 1) //then we have a hit and musts make the playerGrid cell red
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
+				com_successful++; //we increment the counter of successful hits
+			}	
+			else //we have a miss
+			{
+				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+			}
 			
 		}
 			String rowc = row.getText();
@@ -151,12 +213,30 @@ Grid computerGrid = new Grid();
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
 			computerGrid.shoot(rowi, columni); //the player shoots
-			computergrid[rowi][columni].setFill(Color.BLACK);
+			if (computerGrid.playerLastFive[j][2] == 1) //then we have a hit and musts make the computerGrid cell red
+			{
+				computergrid[rowi][columni].setFill(Color.DARKRED);
+				msg.setText("Your hit was succesful,congratulations!");
+				pla_successful++; //we increment the counter of successful hits
+			}
+			else {	//we have a miss
+				computergrid[rowi][columni].setFill(Color.BLACK);	
+				msg.setText("Your hit was unsuccesful,try again!");
+			}
 			row.setText("");
 			column.setText("");
-			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips);
-			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips);
+			plact.setText("Player's active Ships: " + playerGrid.aliveShips ); //set the text for alive ships
+			compact.setText("Computer's active Ships: " + computerGrid.aliveShips);
+			plapon.setText("Player's points: " + computerGrid.points); //set the text for point
+			compon.setText("Computer's points: " + playerGrid.points);
+			computer_success_rate = Math.round((com_successful/(k+1))*100); //the success rate for the computer
+			player_success_rate = Math.round((pla_successful/(j+1))*100); //the success rate for the player
+			comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
+			plahit.setText("Player's hit rate: " + player_success_rate + "%");
+			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips+ ".Success rate: "+ computer_success_rate);
+			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+ player_success_rate);
 			k++;
+			j++;
 		}
 		
 		if (computerGrid.shots == 0  || playerGrid.sunkenShips == 5 || computerGrid.sunkenShips == 5)
@@ -168,15 +248,31 @@ Grid computerGrid = new Grid();
 			if (computerGrid.shots == 0 && playerGrid.shots == 0)
 			{
 				if (computerGrid.points > playerGrid.points) //the player has achieved more points on computers grid
+					{
 					System.out.println("The player has won with " + computerGrid.points + " points!");
-				else System.out.println("The computer has won with " + playerGrid.points + " points!");
+					msg.setFill(Color.DARKSLATEBLUE);
+					msg.setText("The player has won with " + computerGrid.points + " points!");
+					}
+				else {
+					System.out.println("The computer has won with " + playerGrid.points + " points!");
+					msg.setFill(Color.DARKSLATEBLUE);
+					msg.setText("The computer has won with " + playerGrid.points + " points!");
+				}
 			}
 			else 
 			{
 				if (playerGrid.sunkenShips == 5) //the computer has sunk players ships in players grid
-					System.out.println("The computer has won because he has sunken all players ships!");
+					{
+					System.out.println("The computer has won because he has sunken all player's ships!");
+					msg.setFill(Color.DARKSLATEBLUE);
+					msg.setText("The computer has won because he has sunken all player's ships!");
+					}
 				else if (computerGrid.sunkenShips == 5)
+					{
 					System.out.println("The player has won because she has sunken all computers ships!");
+					msg.setFill(Color.DARKSLATEBLUE);
+					msg.setText("The player has won because she has sunken all computers ships!");
+					}
 			}
 		}
 		
