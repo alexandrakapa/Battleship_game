@@ -4,13 +4,27 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sun.glass.ui.Window;
+
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 
@@ -36,6 +50,7 @@ long r = 1;
 int j = 0; //to know the players moves
 double pla_successful = 0; //to help us count the success rate for player
 double player_success_rate,computer_success_rate; //the percentages of successful hits
+Label displayLabel = new Label("What do you want to do ?");
 
 Grid playerGrid = new Grid(); //Initialize the two grids
 Grid computerGrid = new Grid();
@@ -45,6 +60,7 @@ Grid computerGrid = new Grid();
 		//Initialize the grid:
 		computerGridMap();
 		playerGridMap();
+		displayLabel.setId("5");
 		try {   //place the players ships 
 			playerGrid.PlaceShip(1,7,0,1); //blue ship
 			for (int i = 0;i < 5;i++)
@@ -288,15 +304,81 @@ Grid computerGrid = new Grid();
 	}
 	
 	public void ExitButtonClicked() {
-		System.out.println("Exit button clicked");
+		//primaryStage.close();
 	}
 
 	public void EnemyShipsButtonClicked() {
 		System.out.println("Enemy ships button clicked");
+	        final Stage dialog = new Stage();
+	        dialog.setTitle("Confirmation");
+	        Button yes = new Button("Yes");
+	        Button no = new Button("No");
+
+	        Label displayLabel = new Label("What do you want to do ?");
+	        displayLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
+
+	        dialog.initModality(Modality.NONE);
+	        //dialog.initOwner((Stage) tableview.getScene().getWindow());
+
+	        HBox dialogHbox = new HBox(20);
+	        dialogHbox.setAlignment(Pos.CENTER);
+
+	        VBox dialogVbox1 = new VBox(20);
+	        dialogVbox1.setAlignment(Pos.CENTER_LEFT);
+
+	        VBox dialogVbox2 = new VBox(20);
+	        dialogVbox2.setAlignment(Pos.CENTER_RIGHT);
+
+	        dialogHbox.getChildren().add(displayLabel);
+	        dialogVbox1.getChildren().add(yes);
+	        dialogVbox2.getChildren().add(no);
+
+	        yes.addEventHandler(MouseEvent.MOUSE_CLICKED,
+	                new EventHandler<MouseEvent>() {
+	                    @Override
+	                    public void handle(MouseEvent e) {
+	                        // inside here you can use the minimize or close the previous stage//
+	                        dialog.close();
+	                    }
+	                });
+	        no.addEventHandler(MouseEvent.MOUSE_CLICKED,
+	                new EventHandler<MouseEvent>() {
+	                    @Override
+	                    public void handle(MouseEvent e) {
+	                        dialog.close();
+	                    }
+	                });
+
+	        dialogHbox.getChildren().addAll(dialogVbox1, dialogVbox2);
+	        Scene dialogScene = new Scene(dialogHbox, 500, 500);
+	       // dialogScene.getStylesheets().add("//style sheet of your choice");
+	        dialog.setScene(dialogScene);
+	        dialog.show();
 	}
+
+	
 	
 	public void PlayerShotsButtonClicked() {
 		System.out.println("Player shots button clicked");
+		
+		String some = displayLabel.getId();
+		System.out.println(some);
+		displayLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
+		displayLabel.setLayoutX(20);
+	    displayLabel.setLayoutY(80);
+		Pane root = new Pane(displayLabel);
+		root.setPrefSize(500, 500);
+
+		Parent content = root;
+
+		// create scene containing the content
+		Scene scene = new Scene(content);
+
+		Stage window = new Stage();
+		window.setScene(scene);
+
+		// make window visible
+		window.show();
 	}
 
 	public void EnemyShotsButtonClicked() {
