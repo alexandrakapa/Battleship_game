@@ -23,6 +23,8 @@ public class Grid {
 	int m = 0; //counter for the above array
 	int [][] playerLastFive = new int [41][4]; //here we keep the shots of player [i][0]: x coordinate,[i][1]:y coordinate,[i][2]:hit(1) or miss(0),[i][3]:type of ship
 	int n = 0; //counter for the above array
+	boolean [] shipsSunk = new boolean[5]; //an array to show the condition of computer's ships, shipsSunk[0]:carrier,shipsSunk[1]:battleship,shipsSunk[2]:cruiser
+										 //shipsSunk[3]:submarine,shipsSunk[4]:destroyer, when we have true then that ships has been sunk  
 	
 	public Grid() {
 		for (Ship[] row : ships) 
@@ -476,6 +478,7 @@ public class Grid {
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
 				aliveShips--; //the number of alive ships
+				shipsSunk[ships[frow][fcolumn].getType()-1] = true; //set that this ship has been sunk 
 				for (int l=fcolumn;l<fcolumn+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[frow][l].setSunk(true);
 
@@ -520,6 +523,7 @@ public class Grid {
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
 				aliveShips--; //the number of alive ships
+				shipsSunk[ships[frow][fcolumn].getType()-1] = true;
 				for (int l=frow;l<frow+ships[shrow][shcolumn].getLength();l++)   //now the ship has been sunk
 					ships[l][fcolumn].setSunk(true);
 

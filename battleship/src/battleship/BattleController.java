@@ -36,8 +36,6 @@ public TextField row;
 public TextField column;
 public Button shootButton;
 public Text compact,plact,compon,plapon,comhit,plahit,msg;
-//public Rectangle p00,p01,p02;
-//public GridPane pane;
 Rectangle [][] playergrid = new Rectangle[11][11]; //we use it for making the grid of the player
 Rectangle [][] computergrid = new Rectangle[11][11]; //we use it to make the grid of the computer
 public Rectangle p00,p01,p02,p03,p04,p05,p06,p07,p08,p09,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39,p40,p41,p42,p43,p44,p45,p46,p47,p48,p49,p50,p51,p52,p53,p54,p55,p56,p57,p58,p59,p60,p61,p62,p63,p64,p65,p66,p67,p68,p69;
@@ -47,12 +45,13 @@ public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85
 int k = 0; //to know the computers moves
 double com_successful = 0; //to help us count the success rate for computer
 //long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-long r = 0;
+long r = 1;
 int j = 0; //to know the players moves
 double pla_successful = 0; //to help us count the success rate for player
 double player_success_rate,computer_success_rate; //the percentages of successful hits
 Label playerLabel = new Label("Player's last five shots:");
 Label computerLabel = new Label("Computer's last five shots:");
+Label enemyShipsLabel = new Label("Condition of enemy's ships:");
 
 Label clarificationsRes = new Label("Hit : 1, Miss : 0");
 Label clarifications0 = new Label("Type 0 : Empty spot");
@@ -242,11 +241,17 @@ Grid computerGrid = new Grid();
 			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and must make the computerGrid cell red
 			{
 				computergrid[rowi][columni].setFill(Color.DARKRED);
-				msg.setText("Your hit was succesful,congratulations!");
+				if (computerGrid.shipsSunk[computerGrid.ships[rowi][columni].getType() - 1] == true)
+					{
+					msg.setFill(Color.FORESTGREEN);
+					msg.setText("You have sunken a ship,congratulations!");
+					}
+				else msg.setText("Your hit was succesful,congratulations!");
 				pla_successful++; //we increment the counter of successful hits
 			}
 			else {	//we have a miss
 				computergrid[rowi][columni].setFill(Color.BLACK);	
+				msg.setFill(Color.MAROON);
 				msg.setText("Your hit was unsuccesful,try again!");
 			}
 			row.setText("");
@@ -273,7 +278,6 @@ Grid computerGrid = new Grid();
 			plahit.setText("Player's hit rate: " + player_success_rate + "%");
 			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
 			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+player_success_rate);
-			
 			k++;
 			j++;
 		}
@@ -303,10 +307,17 @@ Grid computerGrid = new Grid();
 			if (computerGrid.playerLastFive[j][2] == 1) //then we have a hit and musts make the computerGrid cell red
 			{
 				computergrid[rowi][columni].setFill(Color.DARKRED);
-				msg.setText("Your hit was succesful,congratulations!");
+				if (computerGrid.shipsSunk[computerGrid.ships[rowi][columni].getType() - 1] == true)
+					{
+					msg.setFill(Color.FORESTGREEN);
+					msg.setText("You have sunken a ship,congratulations!");
+					}
+				else 
+					msg.setText("Your hit was succesful,congratulations!");
 				pla_successful++; //we increment the counter of successful hits
 			}
 			else {	//we have a miss
+				msg.setFill(Color.MAROON);
 				computergrid[rowi][columni].setFill(Color.BLACK);	
 				msg.setText("Your hit was unsuccesful,try again!");
 			}
@@ -494,51 +505,78 @@ Grid computerGrid = new Grid();
 
 	public void EnemyShipsButtonClicked() {
 		System.out.println("Enemy ships button clicked");
-	        final Stage dialog = new Stage();
-	        dialog.setTitle("Confirmation");
-	        Button yes = new Button("Yes");
-	        Button no = new Button("No");
+		enemyShipsLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
+		enemyShipsLabel.setLayoutX(20);
+	    enemyShipsLabel.setLayoutY(20);
+	    
+	    Label carrierLabel = new Label("Carrier: ");
+	    carrierLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+		carrierLabel.setLayoutX(20);
+	    carrierLabel.setLayoutY(80);
+	
+	    Label carrierCondition = new Label("Not sunk!");
+	    if (computerGrid.shipsSunk[0] == true)
+	    	carrierCondition.setText("Sunk!");
+		carrierCondition.setLayoutX(20);
+	    carrierCondition.setLayoutY(110);
+	    
+	    Label battleshipLabel = new Label("Battleship: ");
+	    battleshipLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+		battleshipLabel.setLayoutX(20);
+	    battleshipLabel.setLayoutY(150);
+	    
+	    Label battleshipCondition = new Label("Not sunk!");
+	    if (computerGrid.shipsSunk[1] == true)
+	    	battleshipCondition.setText("Sunk!");
+		battleshipCondition.setLayoutX(20);
+	    battleshipCondition.setLayoutY(180);
+	    
+	    Label cruiserLabel = new Label("Cruiser: ");
+	    cruiserLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+		cruiserLabel.setLayoutX(20);
+	    cruiserLabel.setLayoutY(220);
+	    
+	    Label cruiserCondition = new Label("Not sunk!");
+	    if (computerGrid.shipsSunk[2] == true)
+	    	cruiserCondition.setText("Sunk!");
+		cruiserCondition.setLayoutX(20);
+	    cruiserCondition.setLayoutY(250);
+	    
+	    Label submarineLabel = new Label("Submarine: ");
+	    submarineLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+		submarineLabel.setLayoutX(20);
+	    submarineLabel.setLayoutY(290);
+	    
+	    Label submarineCondition = new Label("Not sunk!");
+	    if (computerGrid.shipsSunk[3] == true)
+	    	submarineCondition.setText("Sunk!");
+		submarineCondition.setLayoutX(20);
+	    submarineCondition.setLayoutY(320);
+	    
+	    Label destroyerLabel = new Label("Destroyer: ");
+	    destroyerLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+		destroyerLabel.setLayoutX(20);
+	    destroyerLabel.setLayoutY(360);
+	    
+	    Label destroyerCondition = new Label("Not sunk!");
+	    if (computerGrid.shipsSunk[4] == true)
+	    	destroyerCondition.setText("Sunk!");
+		destroyerCondition.setLayoutX(20);
+	    destroyerCondition.setLayoutY(390);
+	    
+		Pane root = new Pane(enemyShipsLabel,carrierLabel,carrierCondition,battleshipCondition,cruiserCondition,submarineCondition,destroyerCondition,battleshipLabel,cruiserLabel,submarineLabel,destroyerLabel);
+		root.setPrefSize(450, 450);
 
-	        Label playerLabel = new Label("What do you want to do ?");
-	        playerLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
+		Parent content = root;
 
-	        dialog.initModality(Modality.NONE);
-	        //dialog.initOwner((Stage) tableview.getScene().getWindow());
+		// create scene containing the content
+		Scene scene = new Scene(content);
 
-	        HBox dialogHbox = new HBox(20);
-	        dialogHbox.setAlignment(Pos.CENTER);
-
-	        VBox dialogVbox1 = new VBox(20);
-	        dialogVbox1.setAlignment(Pos.CENTER_LEFT);
-
-	        VBox dialogVbox2 = new VBox(20);
-	        dialogVbox2.setAlignment(Pos.CENTER_RIGHT);
-
-	        dialogHbox.getChildren().add(playerLabel);
-	        dialogVbox1.getChildren().add(yes);
-	        dialogVbox2.getChildren().add(no);
-
-	        yes.addEventHandler(MouseEvent.MOUSE_CLICKED,
-	                new EventHandler<MouseEvent>() {
-	                    @Override
-	                    public void handle(MouseEvent e) {
-	                        // inside here you can use the minimize or close the previous stage//
-	                        dialog.close();
-	                    }
-	                });
-	        no.addEventHandler(MouseEvent.MOUSE_CLICKED,
-	                new EventHandler<MouseEvent>() {
-	                    @Override
-	                    public void handle(MouseEvent e) {
-	                        dialog.close();
-	                    }
-	                });
-
-	        dialogHbox.getChildren().addAll(dialogVbox1, dialogVbox2);
-	        Scene dialogScene = new Scene(dialogHbox, 500, 500);
-	       // dialogScene.getStylesheets().add("//style sheet of your choice");
-	        dialog.setScene(dialogScene);
-	        dialog.show();
+		Stage window = new Stage();
+		window.setScene(scene);
+		window.setTitle("Enemy Ships");
+		// make window visible
+		window.show();
 	}
 
 	
