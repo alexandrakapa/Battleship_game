@@ -27,7 +27,7 @@ public class Grid {
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 5; //we begin with 40 shots
+		shots = 10; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship

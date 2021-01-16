@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import com.sun.glass.ui.Window;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -46,11 +47,70 @@ public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85
 int k = 0; //to know the computers moves
 double com_successful = 0; //to help us count the success rate for computer
 //long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-long r = 1;
+long r = 0;
 int j = 0; //to know the players moves
 double pla_successful = 0; //to help us count the success rate for player
 double player_success_rate,computer_success_rate; //the percentages of successful hits
-Label displayLabel = new Label("What do you want to do ?");
+Label playerLabel = new Label("Player's last five shots:");
+Label computerLabel = new Label("Computer's last five shots:");
+
+Label clarificationsRes = new Label("Hit : 1, Miss : 0");
+Label clarifications0 = new Label("Type 0 : Empty spot");
+Label clarifications1 = new Label("Type 1 : Carrier");
+Label clarifications2 = new Label("Type 2 : Battleship");
+Label clarifications3 = new Label("Type 3 : Cruiser");
+Label clarifications4 = new Label("Type 4 : Submarine");
+Label clarifications5 = new Label("Type 5 : Destroyer");
+Label shot_five = new Label("5th shot:");
+Label shot_four = new Label("4th shot:");
+Label shot_three = new Label("3rd shot:");
+Label shot_two = new Label("2nd shot:");
+Label shot_one = new Label("1st shot:");
+
+//for the player
+Label pla_xy_five = new Label(""); //for the 5th coordinates of the player (i.e the last)
+Label pla_res_five = new Label(""); //for the result or the player
+Label pla_type_five = new Label(""); //for the type of the player 
+
+Label pla_xy_four = new Label(""); //for the 4th coordinates of the player
+Label pla_res_four = new Label(""); //for the result or the player
+Label pla_type_four = new Label(""); //for the type of the player 
+
+Label pla_xy_three = new Label(""); //for the 3d coordinates of the player
+Label pla_res_three = new Label(""); //for the result or the player
+Label pla_type_three = new Label(""); //for the type of the player 
+
+Label pla_xy_two = new Label(""); //for the 2nd coordinates of the player
+Label pla_res_two = new Label(""); //for the result or the player
+Label pla_type_two = new Label(""); //for the type of the player 
+
+Label pla_xy_one = new Label(""); //for the 1st coordinates of the player
+Label pla_res_one = new Label(""); //for the result or the player
+Label pla_type_one = new Label(""); //for the type of the player 
+
+//for the computer
+Label comp_xy_five = new Label(""); //for the 5th coordinates of the player (i.e the last)
+Label comp_res_five = new Label(""); //for the result or the player
+Label comp_type_five = new Label(""); //for the type of the computer 
+
+Label comp_xy_four = new Label(""); //for the 4th coordinates of the computer
+Label comp_res_four = new Label(""); //for the result or the computer
+Label comp_type_four = new Label(""); //for the type of the computer 
+
+Label comp_xy_three = new Label(""); //for the 3d coordinates of the computer
+Label comp_res_three = new Label(""); //for the result or the computer
+Label comp_type_three = new Label(""); //for the type of the computer 
+
+Label comp_xy_two = new Label(""); //for the 2nd coordinates of the computer
+Label comp_res_two = new Label(""); //for the result or the computer
+Label comp_type_two = new Label(""); //for the type of the computer 
+
+Label comp_xy_one = new Label(""); //for the 1st coordinates of the computer
+Label comp_res_one = new Label(""); //for the result or the computer
+Label comp_type_one = new Label(""); //for the type of the computer 
+
+public Label [][] plaLastFive = new Label [5][3]; //for the last five player shots
+public Label [][] compLastFive = new Label [5][3]; //for the last five computer shots
 
 Grid playerGrid = new Grid(); //Initialize the two grids
 Grid computerGrid = new Grid();
@@ -60,7 +120,8 @@ Grid computerGrid = new Grid();
 		//Initialize the grid:
 		computerGridMap();
 		playerGridMap();
-		displayLabel.setId("5");
+		plaLastFiveMap(); //for the last five shoots
+		compLastFiveMap();
 		try {   //place the players ships 
 			playerGrid.PlaceShip(1,7,0,1); //blue ship
 			for (int i = 0;i < 5;i++)
@@ -157,6 +218,12 @@ Grid computerGrid = new Grid();
 			comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
 			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
 			k++;
+			if (k - 1 == 0) //the computer has done 1 move
+			{
+					compLastFive[0][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-1][0] + "," + playerGrid.computerLastFive[k-1][1] + ")");
+					compLastFive[0][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-1][2]);
+					compLastFive[0][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-1][3]);
+			}
 		}
 	}
 	
@@ -172,7 +239,7 @@ Grid computerGrid = new Grid();
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
 			computerGrid.shoot(rowi, columni); //the player shoots
-			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and musts make the computerGrid cell red
+			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and must make the computerGrid cell red
 			{
 				computergrid[rowi][columni].setFill(Color.DARKRED);
 				msg.setText("Your hit was succesful,congratulations!");
@@ -185,6 +252,8 @@ Grid computerGrid = new Grid();
 			row.setText("");
 			column.setText("");
 			playerGrid.computerShoot(); //the computer shoots
+			
+			
 			if (playerGrid.computerLastFive[k][2] == 1) //then we have a hit and musts make the playerGrid cell red
 			{
 				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
@@ -204,9 +273,11 @@ Grid computerGrid = new Grid();
 			plahit.setText("Player's hit rate: " + player_success_rate + "%");
 			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
 			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+player_success_rate);
+			
 			k++;
 			j++;
 		}
+		
 		else if (r==0) { //computer plays first
 			msg.setFill(Color.DODGERBLUE);
 			msg.setLayoutX(208);
@@ -253,6 +324,84 @@ Grid computerGrid = new Grid();
 			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+ player_success_rate);
 			k++;
 			j++;
+		}
+		//for the player pop up
+		if (j - 5 >= 0 ) //the player has done 5+ moves
+		{
+			for (int s = 0; s < 5; s++ ) {
+				plaLastFive[s][0].setText("-> Coordinates: (" + computerGrid.playerLastFive[j-5+s][0] + "," + computerGrid.playerLastFive[j-5+s][1] + ")");
+				plaLastFive[s][1].setText("-> Hit or miss: " + computerGrid.playerLastFive[j-5+s][2]);
+				plaLastFive[s][2].setText("-> It was of type: " + computerGrid.playerLastFive[j-5+s][3]);
+			}
+		}
+		else if (j - 4 == 0) //the player has done 4 moves
+		{
+			for (int s = 0; s < 4; s++) {
+				plaLastFive[s][0].setText("-> Coordinates: (" + computerGrid.playerLastFive[j-4+s][0] + "," + computerGrid.playerLastFive[j-4+s][1] + ")");
+				plaLastFive[s][1].setText("-> Hit or miss: " + computerGrid.playerLastFive[j-4+s][2]);
+				plaLastFive[s][2].setText("-> It was of type: " + computerGrid.playerLastFive[j-4+s][3]);
+			}
+		}
+		else if (j - 3 == 0) //the player has done 3 moves
+		{
+			for (int s = 0; s < 3; s++) {
+				plaLastFive[s][0].setText("-> Coordinates: (" + computerGrid.playerLastFive[j-3+s][0] + "," + computerGrid.playerLastFive[j-3+s][1] + ")");
+				plaLastFive[s][1].setText("-> Hit or miss: " + computerGrid.playerLastFive[j-3+s][2]);
+				plaLastFive[s][2].setText("-> It was of type: " + computerGrid.playerLastFive[j-3+s][3]);
+			}
+		}
+		else if (j - 2 == 0) //the player has done 2 moves
+		{
+			for (int s = 0; s < 2; s++) {
+				plaLastFive[s][0].setText("-> Coordinates: (" + computerGrid.playerLastFive[j-2+s][0] + "," + computerGrid.playerLastFive[j-2+s][1] + ")");
+				plaLastFive[s][1].setText("-> Hit or miss: " + computerGrid.playerLastFive[j-2+s][2]);
+				plaLastFive[s][2].setText("-> It was of type: " + computerGrid.playerLastFive[j-2+s][3]);
+			}
+		}
+		else if (j - 1 == 0) //the player has done 1 move
+		{
+				plaLastFive[0][0].setText("-> Coordinates: (" + computerGrid.playerLastFive[j-1][0] + "," + computerGrid.playerLastFive[j-1][1] + ")");
+				plaLastFive[0][1].setText("-> Hit or miss: " + computerGrid.playerLastFive[j-1][2]);
+				plaLastFive[0][2].setText("-> It was of type: " + computerGrid.playerLastFive[j-1][3]);
+		}
+		//for the computer pop up
+		if (k - 5 >= 0 ) //the computer has done 5+ moves
+		{
+			for (int s = 0; s < 5; s++ ) {
+				compLastFive[s][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-5+s][0] + "," + playerGrid.computerLastFive[k-5+s][1] + ")");
+				compLastFive[s][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-5+s][2]);
+				compLastFive[s][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-5+s][3]);
+			}
+		}
+		else if (k - 4 == 0) //the computer has done 4 moves
+		{
+			for (int s = 0; s < 4; s++) {
+				compLastFive[s][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-4+s][0] + "," + playerGrid.computerLastFive[k-4+s][1] + ")");
+				compLastFive[s][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-4+s][2]);
+				compLastFive[s][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-4+s][3]);
+			}
+		}
+		else if (k - 3 == 0) //the computer has done 3 moves
+		{
+			for (int s = 0; s < 3; s++) {
+				compLastFive[s][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-3+s][0] + "," + playerGrid.computerLastFive[k-3+s][1] + ")");
+				compLastFive[s][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-3+s][2]);
+				compLastFive[s][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-3+s][3]);
+			}
+		}
+		else if (k - 2 == 0) //the computer has done 2 moves
+		{
+			for (int s = 0; s < 2; s++) {
+				compLastFive[s][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-2+s][0] + "," + playerGrid.computerLastFive[k-2+s][1] + ")");
+				compLastFive[s][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-2+s][2]);
+				compLastFive[s][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-2+s][3]);
+			}
+		}
+		else if (k - 1 == 0) //the computer has done 1 move
+		{
+				compLastFive[0][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-1][0] + "," + playerGrid.computerLastFive[k-1][1] + ")");
+				compLastFive[0][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-1][2]);
+				compLastFive[0][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-1][3]);
 		}
 		
 		if (computerGrid.shots == 0  || playerGrid.sunkenShips == 5 || computerGrid.sunkenShips == 5)
@@ -304,18 +453,13 @@ Grid computerGrid = new Grid();
 	}
 	
 	public void ExitButtonClicked() {
-		//primaryStage.close();
-	}
-
-	public void EnemyShipsButtonClicked() {
-		System.out.println("Enemy ships button clicked");
-	        final Stage dialog = new Stage();
-	        dialog.setTitle("Confirmation");
+		  final Stage dialog = new Stage();
+	        dialog.setTitle("Exit");
 	        Button yes = new Button("Yes");
 	        Button no = new Button("No");
 
-	        Label displayLabel = new Label("What do you want to do ?");
-	        displayLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
+	        Label exitLabel = new Label("Are you sure you want to exit?");
+	        exitLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
 
 	        dialog.initModality(Modality.NONE);
 	        //dialog.initOwner((Stage) tableview.getScene().getWindow());
@@ -329,7 +473,48 @@ Grid computerGrid = new Grid();
 	        VBox dialogVbox2 = new VBox(20);
 	        dialogVbox2.setAlignment(Pos.CENTER_RIGHT);
 
-	        dialogHbox.getChildren().add(displayLabel);
+	        dialogHbox.getChildren().add(exitLabel);
+	        dialogVbox1.getChildren().add(yes);
+	        dialogVbox2.getChildren().add(no);
+
+	        yes.setOnAction(e -> Platform.exit());
+	        no.addEventHandler(MouseEvent.MOUSE_CLICKED,
+	                new EventHandler<MouseEvent>() {
+	                    @Override
+	                    public void handle(MouseEvent e) {
+	                        dialog.close();
+	                    }
+	                });
+
+	        dialogHbox.getChildren().addAll(dialogVbox1, dialogVbox2);
+	        Scene dialogScene = new Scene(dialogHbox, 500, 100);
+	        dialog.setScene(dialogScene);
+	        dialog.show();
+	}
+
+	public void EnemyShipsButtonClicked() {
+		System.out.println("Enemy ships button clicked");
+	        final Stage dialog = new Stage();
+	        dialog.setTitle("Confirmation");
+	        Button yes = new Button("Yes");
+	        Button no = new Button("No");
+
+	        Label playerLabel = new Label("What do you want to do ?");
+	        playerLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
+
+	        dialog.initModality(Modality.NONE);
+	        //dialog.initOwner((Stage) tableview.getScene().getWindow());
+
+	        HBox dialogHbox = new HBox(20);
+	        dialogHbox.setAlignment(Pos.CENTER);
+
+	        VBox dialogVbox1 = new VBox(20);
+	        dialogVbox1.setAlignment(Pos.CENTER_LEFT);
+
+	        VBox dialogVbox2 = new VBox(20);
+	        dialogVbox2.setAlignment(Pos.CENTER_RIGHT);
+
+	        dialogHbox.getChildren().add(playerLabel);
 	        dialogVbox1.getChildren().add(yes);
 	        dialogVbox2.getChildren().add(no);
 
@@ -361,13 +546,100 @@ Grid computerGrid = new Grid();
 	public void PlayerShotsButtonClicked() {
 		System.out.println("Player shots button clicked");
 		
-		String some = displayLabel.getId();
-		System.out.println(some);
-		displayLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
-		displayLabel.setLayoutX(20);
-	    displayLabel.setLayoutY(80);
-		Pane root = new Pane(displayLabel);
-		root.setPrefSize(500, 500);
+		playerLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
+		playerLabel.setLayoutX(20);
+	    playerLabel.setLayoutY(20);
+	    
+	    //some styling
+	    shot_five.setLayoutX(20);
+	    shot_five.setLayoutY(80);
+	    shot_five.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    pla_xy_five.setLayoutX(20);
+	    pla_xy_five.setLayoutY(110);
+	    
+	    pla_res_five.setLayoutX(20);
+	    pla_res_five.setLayoutY(130);
+	    
+	    pla_type_five.setLayoutX(20);
+	    pla_type_five.setLayoutY(150);
+	    
+	    shot_four.setLayoutX(250);
+	    shot_four.setLayoutY(80);
+	    shot_four.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    pla_xy_four.setLayoutX(250);
+	    pla_xy_four.setLayoutY(110);
+	    
+	    pla_res_four.setLayoutX(250);
+	    pla_res_four.setLayoutY(130);
+	    
+	    pla_type_four.setLayoutX(250);
+	    pla_type_four.setLayoutY(150);
+	    
+	    shot_three.setLayoutX(20);
+	    shot_three.setLayoutY(190);
+	    shot_three.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    pla_xy_three.setLayoutX(20);
+	    pla_xy_three.setLayoutY(220);
+	    
+	    pla_res_three.setLayoutX(20);
+	    pla_res_three.setLayoutY(240);
+	    
+	    pla_type_three.setLayoutX(20);
+	    pla_type_three.setLayoutY(260);
+	    
+	    shot_two.setLayoutX(250);
+	    shot_two.setLayoutY(190);
+	    shot_two.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    pla_xy_two.setLayoutX(250);
+	    pla_xy_two.setLayoutY(220);
+	    
+	    pla_res_two.setLayoutX(250);
+	    pla_res_two.setLayoutY(240);
+	    
+	    pla_type_two.setLayoutX(250);
+	    pla_type_two.setLayoutY(260);
+	    
+	    shot_one.setLayoutX(20);
+	    shot_one.setLayoutY(300);
+	    shot_one.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    pla_xy_one.setLayoutX(20);
+	    pla_xy_one.setLayoutY(330);
+	    
+	    pla_res_one.setLayoutX(20);
+	    pla_res_one.setLayoutY(350);
+	    
+	    pla_type_one.setLayoutX(20);
+	    pla_type_one.setLayoutY(370);
+	    
+	    clarificationsRes.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarificationsRes.setLayoutX(250);
+	    clarificationsRes.setLayoutY(300);
+	    clarifications0.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications0.setLayoutX(250);
+	    clarifications0.setLayoutY(320);
+	    clarifications1.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications1.setLayoutX(250);
+	    clarifications1.setLayoutY(340);
+	    clarifications2.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications2.setLayoutX(250);
+	    clarifications2.setLayoutY(360);
+	    clarifications3.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications3.setLayoutX(250);
+	    clarifications3.setLayoutY(380);
+	    clarifications4.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications4.setLayoutX(250);
+	    clarifications4.setLayoutY(400);
+	    clarifications5.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications5.setLayoutX(250);
+	    clarifications5.setLayoutY(420);
+	    
+		Pane root = new Pane(playerLabel,clarificationsRes,clarifications0,clarifications1,clarifications2,clarifications3,clarifications4,clarifications5,shot_five,pla_xy_five,pla_res_five,pla_type_five,shot_four,pla_xy_four,pla_res_four,pla_type_four,shot_three,pla_xy_three,pla_res_three,pla_type_three,shot_two,pla_xy_two,pla_res_two,pla_type_two,shot_one,pla_xy_one,pla_res_one,pla_type_one);
+		root.setPrefSize(450, 450);
 
 		Parent content = root;
 
@@ -376,13 +648,119 @@ Grid computerGrid = new Grid();
 
 		Stage window = new Stage();
 		window.setScene(scene);
-
+		window.setTitle("Player Shots");
 		// make window visible
 		window.show();
 	}
+	
 
 	public void EnemyShotsButtonClicked() {
 		System.out.println("Enemy shots button clicked");
+		computerLabel.setFont(Font.font(null, FontWeight.BOLD, 20));
+		computerLabel.setLayoutX(20);
+	    computerLabel.setLayoutY(20);
+	    
+	    //some styling
+	    shot_five.setLayoutX(20);
+	    shot_five.setLayoutY(80);
+	    shot_five.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    comp_xy_five.setLayoutX(20);
+	    comp_xy_five.setLayoutY(110);
+	    
+	    comp_res_five.setLayoutX(20);
+	    comp_res_five.setLayoutY(130);
+	    
+	    comp_type_five.setLayoutX(20);
+	    comp_type_five.setLayoutY(150);
+	    
+	    shot_four.setLayoutX(250);
+	    shot_four.setLayoutY(80);
+	    shot_four.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    comp_xy_four.setLayoutX(250);
+	    comp_xy_four.setLayoutY(110);
+	    
+	    comp_res_four.setLayoutX(250);
+	    comp_res_four.setLayoutY(130);
+	    
+	    comp_type_four.setLayoutX(250);
+	    comp_type_four.setLayoutY(150);
+	    
+	    shot_three.setLayoutX(20);
+	    shot_three.setLayoutY(190);
+	    shot_three.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    comp_xy_three.setLayoutX(20);
+	    comp_xy_three.setLayoutY(220);
+	    
+	    comp_res_three.setLayoutX(20);
+	    comp_res_three.setLayoutY(240);
+	    
+	    comp_type_three.setLayoutX(20);
+	    comp_type_three.setLayoutY(260);
+	    
+	    shot_two.setLayoutX(250);
+	    shot_two.setLayoutY(190);
+	    shot_two.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    comp_xy_two.setLayoutX(250);
+	    comp_xy_two.setLayoutY(220);
+	    
+	    comp_res_two.setLayoutX(250);
+	    comp_res_two.setLayoutY(240);
+	    
+	    comp_type_two.setLayoutX(250);
+	    comp_type_two.setLayoutY(260);
+	    
+	    shot_one.setLayoutX(20);
+	    shot_one.setLayoutY(300);
+	    shot_one.setFont(Font.font(null, FontWeight.BOLD, 16));
+	    
+	    comp_xy_one.setLayoutX(20);
+	    comp_xy_one.setLayoutY(330);
+	    
+	    comp_res_one.setLayoutX(20);
+	    comp_res_one.setLayoutY(350);
+	    
+	    comp_type_one.setLayoutX(20);
+	    comp_type_one.setLayoutY(370);
+	    
+	    clarificationsRes.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarificationsRes.setLayoutX(250);
+	    clarificationsRes.setLayoutY(300);
+	    clarifications0.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications0.setLayoutX(250);
+	    clarifications0.setLayoutY(320);
+	    clarifications1.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications1.setLayoutX(250);
+	    clarifications1.setLayoutY(340);
+	    clarifications2.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications2.setLayoutX(250);
+	    clarifications2.setLayoutY(360);
+	    clarifications3.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications3.setLayoutX(250);
+	    clarifications3.setLayoutY(380);
+	    clarifications4.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications4.setLayoutX(250);
+	    clarifications4.setLayoutY(400);
+	    clarifications5.setFont(Font.font(null, FontWeight.BOLD, 14));
+	    clarifications5.setLayoutX(250);
+	    clarifications5.setLayoutY(420);
+	    
+		Pane root = new Pane(computerLabel,clarificationsRes,clarifications0,clarifications1,clarifications2,clarifications3,clarifications4,clarifications5,shot_five,comp_xy_five,comp_res_five,comp_type_five,shot_four,comp_xy_four,comp_res_four,comp_type_four,shot_three,comp_xy_three,comp_res_three,comp_type_three,shot_two,comp_xy_two,comp_res_two,comp_type_two,shot_one,comp_xy_one,comp_res_one,comp_type_one);
+		root.setPrefSize(450, 450);
+
+		Parent content = root;
+
+		// create scene containing the content
+		Scene scene = new Scene(content);
+
+		Stage window = new Stage();
+		window.setScene(scene);
+		window.setTitle("Enemy Shots");
+		// make window visible
+		window.show();
 	}
 	
 	void playerGridMap() {
@@ -589,5 +967,41 @@ Grid computerGrid = new Grid();
 		computergrid[9][8]=c98;
 		computergrid[9][9]=c99;
 	}
-
+	
+	void plaLastFiveMap() {
+		plaLastFive[0][0] = pla_xy_one;
+		plaLastFive[0][1] = pla_res_one;
+		plaLastFive[0][2] = pla_type_one;
+		plaLastFive[1][0] = pla_xy_two;
+		plaLastFive[1][1] = pla_res_two;
+		plaLastFive[1][2] = pla_type_two;
+		plaLastFive[2][0] = pla_xy_three;
+		plaLastFive[2][1] = pla_res_three;
+		plaLastFive[2][2] = pla_type_three;
+		plaLastFive[3][0] = pla_xy_four;
+		plaLastFive[3][1] = pla_res_four;
+		plaLastFive[3][2] = pla_type_four;
+		plaLastFive[4][0] = pla_xy_five;
+		plaLastFive[4][1] = pla_res_five;
+		plaLastFive[4][2] = pla_type_five;
+		
+	}
+	void compLastFiveMap() {
+		compLastFive[0][0] = comp_xy_one;
+		compLastFive[0][1] = comp_res_one;
+		compLastFive[0][2] = comp_type_one;
+		compLastFive[1][0] = comp_xy_two;
+		compLastFive[1][1] = comp_res_two;
+		compLastFive[1][2] = comp_type_two;
+		compLastFive[2][0] = comp_xy_three;
+		compLastFive[2][1] = comp_res_three;
+		compLastFive[2][2] = comp_type_three;
+		compLastFive[3][0] = comp_xy_four;
+		compLastFive[3][1] = comp_res_four;
+		compLastFive[3][2] = comp_type_four;
+		compLastFive[4][0] = comp_xy_five;
+		compLastFive[4][1] = comp_res_five;
+		compLastFive[4][2] = comp_type_five;
+		
+	}
 }
