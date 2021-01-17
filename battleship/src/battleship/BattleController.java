@@ -1,21 +1,21 @@
 package battleship;
 
-import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.sun.glass.ui.Window;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -30,12 +30,14 @@ import javafx.stage.Stage;
 
 
 
-public class BattleController implements Initializable{
-public Button buttonid;
+public class BattleController implements Initializable {
+public TextField file = new TextField(); //to read the file id
+public int [][] pla_placement = new int [5][4]; //to keep the placement from the player.txt
+public int [][] comp_placement = new int [5][4]; //to keep the placement from the enemy.txt
 public TextField row;	
 public TextField column;
 public Button shootButton;
-public Text compact,plact,compon,plapon,comhit,plahit,msg;
+public Text compact,plact,compon,plapon,comhit,plahit,msg,textmsg;
 Rectangle [][] playergrid = new Rectangle[11][11]; //we use it for making the grid of the player
 Rectangle [][] computergrid = new Rectangle[11][11]; //we use it to make the grid of the computer
 public Rectangle p00,p01,p02,p03,p04,p05,p06,p07,p08,p09,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39,p40,p41,p42,p43,p44,p45,p46,p47,p48,p49,p50,p51,p52,p53,p54,p55,p56,p57,p58,p59,p60,p61,p62,p63,p64,p65,p66,p67,p68,p69;
@@ -49,9 +51,16 @@ long r = 1;
 int j = 0; //to know the players moves
 double pla_successful = 0; //to help us count the success rate for player
 double player_success_rate,computer_success_rate; //the percentages of successful hits
+Label errorLabel = new Label("");
 Label playerLabel = new Label("Player's last five shots:");
 Label computerLabel = new Label("Computer's last five shots:");
 Label enemyShipsLabel = new Label("Condition of enemy's ships:");
+
+Label carrierCondition = new Label("Not sunk!");
+Label battleshipCondition = new Label("Not sunk!");
+Label cruiserCondition = new Label("Not sunk!");
+Label submarineCondition = new Label("Not sunk!");
+Label destroyerCondition = new Label("Not sunk!");
 
 Label clarificationsRes = new Label("Hit : 1, Miss : 0");
 Label clarifications0 = new Label("Type 0 : Empty spot");
@@ -113,117 +122,21 @@ public Label [][] compLastFive = new Label [5][3]; //for the last five computer 
 
 Grid playerGrid = new Grid(); //Initialize the two grids
 Grid computerGrid = new Grid();
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		//System.out.println("Now it starts");
 		//Initialize the grid:
 		computerGridMap();
 		playerGridMap();
 		plaLastFiveMap(); //for the last five shoots
 		compLastFiveMap();
-		try {   //place the players ships 
-			playerGrid.PlaceShip(1,7,0,1); //blue ship
-			for (int i = 0;i < 5;i++)
-				playergrid[7][i].setFill(Color.BLUE);
-			playerGrid.PlaceShip(2,5,1,1); //purple
-			for (int i = 0;i < 4;i++)
-				playergrid[5][1+i].setFill(Color.VIOLET);
-			playerGrid.PlaceShip(3,6,6,2); //red
-			for (int i = 0;i < 3;i++)
-				playergrid[6+i][6].setFill(Color.DARKORANGE);
-			playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
-			for (int i = 0;i < 3;i++)
-				playergrid[1][1+i].setFill(Color.YELLOW);
-			playerGrid.PlaceShip(5,3,8,2); //green
-			for (int i = 0;i < 2;i++)
-				playergrid[3+i][8].setFill(Color.GREEN);
-			
-		}
-			catch(OversizeException e)                       
-			{
-			//	i=i+1; //in order to place again
-				System.out.println("Wrong placement!The grid is 10*10,sorry!");
-			}
-			catch(OverlapTilesException o)
-			{
-			//	i=i+1; //in order to place again
-				System.out.println("There is another ship here,sorry!");
-			}		
-			catch(AdjacentTilesException a)
-			{
-			//	i=i+1; //in order to place again
-				System.out.println("You must keep a distance of a line -covid- here,sorry!");
-			}
-			catch(InvalidCountException k)
-			{
-			//	i=i+1; //in order to place again
-				System.out.println("Ooops!You have already placed a ship of this type!");
-			}
-			catch(ArrayIndexOutOfBoundsException a)
-			{
-				System.out.println("Wrong placement!The grid is 10*10,sorry!");
-			//	i=i+1; //in order to place again
-			}
-		//}
-		System.out.println("Player has placed her ships!");
-		
-		//computerGrid.computerPlaceShip();
-		try {
-			computerGrid.PlaceShip(1,8,4,1); //blue ship
-			computerGrid.PlaceShip(2,4,2,2); //purple
-			computerGrid.PlaceShip(3,3,8,2); //red
-			computerGrid.PlaceShip(4,1,6,2); //yellow
-			computerGrid.PlaceShip(5,4,4,2); //green
-			
-		}
-		catch(OversizeException e)                       
-		{}
-		catch(OverlapTilesException o)
-		{}
-		catch(AdjacentTilesException a)
-		{}
-		catch(InvalidCountException i)
-		{}
-		catch(ArrayIndexOutOfBoundsException a)
-		{
-			System.out.println("Wrong placement!The grid is 10*10,sorry!");
-		}
-		
-		System.out.println("Computer has placed his ships!");	
-		if (r == 1) //player plays first
-			{
-			System.out.println("Player plays first");
-			msg.setLayoutX(340);
-			msg.setFill(Color.DARKBLUE);
-			msg.setText("Player plays first!");
-			}
-		else if (r==0)  //computer plays first
-		{
-			System.out.println("Computer plays first");
-			playerGrid.computerShoot(); //the computer shoots
-			msg.setLayoutX(340);
-			msg.setFill(Color.DARKBLUE);
-			msg.setText("Computer plays first!");
-			if (playerGrid.computerLastFive[k][2] == 1) //then computer has a hit and musts make the playerGrid cell red
-			{
-				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
-				com_successful++; //we increment the counter of successful hits
-			}	
-			else //we have a miss
-			{
-				playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
-			}
-			computer_success_rate = Math.round((com_successful/(k+1))*100); //the success rate for the computer
-			comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
-			System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
-			k++;
-			if (k - 1 == 0) //the computer has done 1 move
-			{
-					compLastFive[0][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-1][0] + "," + playerGrid.computerLastFive[k-1][1] + ")");
-					compLastFive[0][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-1][2]);
-					compLastFive[0][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-1][3]);
-			}
-		}
+		shootButton.setDisable(true); //we want them disabled at the start
+		row.setDisable(true);
+		column.setDisable(true);
+		textmsg.setText("");
+		msg.setText("Please load a file!");
+		msg.setFill(Color.DARKGOLDENROD);
+		msg.setLayoutX(330);
 	}
 	
 
@@ -285,7 +198,7 @@ Grid computerGrid = new Grid();
 		else if (r==0) { //computer plays first
 			msg.setFill(Color.DODGERBLUE);
 			msg.setLayoutX(208);
-		if(k!=5) { //because the computer has started playing before
+		if(k!=10) { //because the computer has started playing before
 			playerGrid.computerShoot(); //the computer shoots
 			if (playerGrid.computerLastFive[k][2] == 1) //then we have a hit and musts make the playerGrid cell red
 			{
@@ -457,10 +370,375 @@ Grid computerGrid = new Grid();
 
 	public void StartButtonClicked() {
 		System.out.println("Start button clicked");
+		shootButton.setDisable(false); //we want them disabled at the start
+		row.setDisable(false);
+		column.setDisable(false);
+		textmsg.setText("Please enter the coordinates of the place you want to shoot at:");
+		if (r == 1) //player plays first
+		{
+		System.out.println("Player plays first");
+		msg.setLayoutX(340);
+		msg.setFill(Color.DARKBLUE);
+		msg.setText("Player plays first!");
+		}
+	else if (r==0)  //computer plays first
+	{
+		System.out.println("Computer plays first");
+		playerGrid.computerShoot(); //the computer shoots
+		msg.setLayoutX(340);
+		msg.setFill(Color.DARKBLUE);
+		msg.setText("Computer plays first!");
+		if (playerGrid.computerLastFive[k][2] == 1) //then computer has a hit and musts make the playerGrid cell red
+		{
+			playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.DARKRED);
+			com_successful++; //we increment the counter of successful hits
+		}	
+		else //we have a miss
+		{
+			playergrid[playerGrid.computerLastFive[k][0]][playerGrid.computerLastFive[k][1]].setFill(Color.BLACK);
+		}
+		computer_success_rate = Math.round((com_successful/(k+1))*100); //the success rate for the computer
+		comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
+		System.out.println("-->Computer has : " + playerGrid.points + " points.Number of shots left : " + playerGrid.shots + ". Number of sunken ships: " + playerGrid.sunkenShips + ".Number of alive ships: " + playerGrid.aliveShips + ".Success rate: "+computer_success_rate);
+		k++;
+		if (k - 1 == 0) //the computer has done 1 move
+		{
+				compLastFive[0][0].setText("-> Coordinates: (" + playerGrid.computerLastFive[k-1][0] + "," + playerGrid.computerLastFive[k-1][1] + ")");
+				compLastFive[0][1].setText("-> Hit or miss: " + playerGrid.computerLastFive[k-1][2]);
+				compLastFive[0][2].setText("-> It was of type: " + playerGrid.computerLastFive[k-1][3]);
+		}
+	}
 	}
 	
 	public void LoadButtonClicked() {
-		System.out.println("Load button clicked");
+	//	System.out.println("Load button clicked");
+		cleanGrid();
+		msg.setText("Please press start button!");
+		msg.setFill(Color.DARKMAGENTA);
+		msg.setLayoutX(300);
+		file.setLayoutX(190);
+		file.setLayoutY(140);
+		file.setPrefWidth(50);
+		Button searchButton = new Button("Upload File");
+		searchButton.setLayoutX(160);
+		searchButton.setLayoutY(210);
+		searchButton.setPrefWidth(100);
+		Label idmsg = new Label("Please enter the SCENARIO-D:");
+		idmsg.setFont(Font.font(null, FontWeight.BOLD, 20));
+		idmsg.setLayoutX(60);
+		idmsg.setLayoutY(70);
+		
+		errorLabel.setTextFill(Color.RED);
+		errorLabel.setLayoutX(30);
+		errorLabel.setLayoutY(270);
+		Pane root = new Pane(file,searchButton,idmsg,errorLabel);
+		root.setPrefSize(450, 350);
+
+		Parent content = root;
+		searchButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                    	String x = file.getText();
+                    	file.setText("");
+                		try (BufferedReader reader = new BufferedReader(new FileReader(new File("player_"+x+".txt")))) { 
+
+                	        String line;
+                	        for (int j= 0;j<5;j++)
+                	        {
+                	        	line = reader.readLine();
+                	        	String[] arrSplit = line.split(","); //to split the numbers
+                		        for (int i=0; i < arrSplit.length; i++)
+                		        {
+                		          pla_placement[j][i]=Integer.parseInt(arrSplit[i]);
+                		        }
+                	        }
+
+                	    } catch (IOException i) {
+                	    	System.out.println("An error occured");
+                	        i.printStackTrace();
+                	    }
+                		try (BufferedReader reader = new BufferedReader(new FileReader(new File("enemy_"+x+".txt")))) { //player_1.txt")))){//
+
+                	        String line;
+                	        for (int j= 0;j<5;j++)
+                	        {
+                	        	line = reader.readLine();
+                	        	String[] arrSplit = line.split(","); //to split the numbers
+                		        for (int i=0; i < arrSplit.length; i++)
+                		        {
+                		          comp_placement[j][i]=Integer.parseInt(arrSplit[i]);
+                		        }
+                	        }
+
+                	    } catch (IOException i) {
+                	    	System.out.println("An error occured");
+                	        i.printStackTrace();
+                	    }
+                		placeShips();  //call function to place ships
+                    } 
+		});
+		// create scene containing the content
+		Scene scene = new Scene(content);
+
+		Stage window = new Stage();
+		window.setScene(scene);
+		window.setTitle("Load");
+		// make window visible
+		window.show();
+		
+		
+	}
+	
+	public void placeShips() {
+	//	for (int i = 0;i < 4; i++)
+		//	System.out.print(comp_placement[0][i]);
+		cleanGrid();
+		errorLabel.setText("");
+		try {   //place the players ships 
+			for (int j = 0; j < 5; j++)
+			{
+				playerGrid.PlaceShip(pla_placement[j][0],pla_placement[j][1],pla_placement[j][2],pla_placement[j][3]);
+				if (pla_placement[j][3] == 1) //horizontal
+				{
+					switch(pla_placement[j][0])
+					{
+					case 1: //so we have a carrier (blue)
+						for (int i = 0;i < 5;i++)
+							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.BLUE);	
+					break;	
+					case 2: //so we have a battleship (purple)
+						for (int i = 0;i < 4;i++)
+							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.VIOLET);
+					break;
+					case 3: //so we have a cruiser (orange)
+						for (int i = 0;i < 3;i++)
+							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.DARKORANGE);
+					break;
+					case 4: //so we have a submarine (yellow)
+						for (int i = 0;i < 3;i++)
+							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.YELLOW);
+					break;
+					case 5: //so we have a destroyer (green)
+						for (int i = 0;i < 2;i++)
+							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.GREEN);
+					break;
+					}
+				}
+				else if (pla_placement[j][3] == 2) //vertical
+				{
+					switch(pla_placement[j][0])
+					{
+					case 1: //so we have a carrier (blue)
+						for (int i = 0;i < 5;i++)
+							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.BLUE);	
+					break;	
+					case 2: //so we have a battleship (purple)
+						for (int i = 0;i < 4;i++)
+							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.VIOLET);
+					break;
+					case 3: //so we have a cruiser (orange)
+						for (int i = 0;i < 3;i++)
+							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.DARKORANGE);
+					break;
+					case 4: //so we have a submarine (yellow)
+						for (int i = 0;i < 3;i++)
+							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.YELLOW);
+					break;
+					case 5: //so we have a destroyer (green)
+						for (int i = 0;i < 2;i++)
+							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.GREEN);
+							
+					break;
+					}
+				}
+			}
+			
+		}
+			catch(OversizeException e)                       
+			{
+				System.out.println("Wrong placement!The grid is 10*10,sorry!");
+				errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+				cleanGrid();
+			}
+			catch(OverlapTilesException o)
+			{
+				System.out.println("There is another ship here,sorry!");
+				errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+				cleanGrid();
+			}		
+			catch(AdjacentTilesException a)
+			{
+				System.out.println("You must keep a distance of a line -covid- here,sorry!");
+				errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+				cleanGrid();
+			}
+			catch(InvalidCountException k)
+			{
+				System.out.println("pOoops!You have already placed a ship of this type!");
+				errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+				cleanGrid();
+			}
+			catch(ArrayIndexOutOfBoundsException a)
+			{
+				System.out.println("Wrong placement!The grid is 10*10,sorry!");
+				errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+				cleanGrid();
+			}
+		System.out.println("Player has placed her ships!");
+		try {   //place the computers ships 
+			for (int j = 0; j < 5; j++)
+			{
+				computerGrid.PlaceShip(comp_placement[j][0],comp_placement[j][1],comp_placement[j][2],comp_placement[j][3]);
+				if (comp_placement[j][3] == 1) //horizontal
+				{
+					switch(comp_placement[j][0])
+					{
+					case 1: //so we have a carrier (blue)
+						for (int i = 0;i < 5;i++)
+							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.BLUE);	
+					break;	
+					case 2: //so we have a battleship (purple)
+						for (int i = 0;i < 4;i++)
+							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.VIOLET);
+					break;
+					case 3: //so we have a cruiser (orange)
+						for (int i = 0;i < 3;i++)
+							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.DARKORANGE);
+					break;
+					case 4: //so we have a submarine (yellow)
+						for (int i = 0;i < 3;i++)
+							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.YELLOW);
+					break;
+					case 5: //so we have a destroyer (green)
+						for (int i = 0;i < 2;i++)
+							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.GREEN);
+					break;
+					}
+				}
+				else if (comp_placement[j][3] == 2) //vertical
+				{
+					switch(comp_placement[j][0])
+					{
+					case 1: //so we have a carrier (blue)
+						for (int i = 0;i < 5;i++)
+							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.BLUE);	
+					break;	
+					case 2: //so we have a battleship (purple)
+						for (int i = 0;i < 4;i++)
+							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.VIOLET);
+					break;
+					case 3: //so we have a cruiser (orange)
+						for (int i = 0;i < 3;i++)
+							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.DARKORANGE);
+					break;
+					case 4: //so we have a submarine (yellow)
+						for (int i = 0;i < 3;i++)
+							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.YELLOW);
+					break;
+					case 5: //so we have a destroyer (green)
+						for (int i = 0;i < 2;i++)
+							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.GREEN);
+							
+					break;
+					}
+				}
+			}
+			
+		}
+		catch(OversizeException e)                       
+		{
+			System.out.println("Wrong placement!The grid is 10*10,sorry!");
+			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+			cleanGrid();
+		}
+		catch(OverlapTilesException o)
+		{
+			System.out.println("There is another ship here,sorry!");
+			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+			cleanGrid();
+		}		
+		catch(AdjacentTilesException a)
+		{
+			System.out.println("You must keep a distance of a line -covid- here,sorry!");
+			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+			cleanGrid();
+		}
+		catch(InvalidCountException k)
+		{
+			System.out.println("cOoops!You have already placed a ship of this type!");
+			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+			cleanGrid();
+		}
+		catch(ArrayIndexOutOfBoundsException a)
+		{
+			System.out.println("Wrong placement!The grid is 10*10,sorry!");
+			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
+			cleanGrid();
+		}
+		System.out.println("Computer has placed his ships!");
+		
+	}
+	
+	public void cleanGrid()  //when we have an error we want the grid to be cleaned and load another file
+	{
+		playerGrid.emptyGrid();
+		computerGrid.emptyGrid();
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0;j < 10; j++)
+			{
+				playergrid[i][j].setFill(Color.DODGERBLUE);
+				computergrid[i][j].setFill(Color.DODGERBLUE);
+			}
+		}
+		k = 0;
+		j = 0;
+		pla_successful = 0;
+		com_successful = 0;
+		player_success_rate = 0;
+		computer_success_rate = 0;
+		plact.setText("Player's active Ships: " + playerGrid.aliveShips ); //set the text for alive ships
+		compact.setText("Computer's active Ships: " + computerGrid.aliveShips);
+		plapon.setText("Player's points: " + computerGrid.points); //set the text for points
+		compon.setText("Computer's points: " + playerGrid.points);
+		comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
+		plahit.setText("Player's hit rate: " + player_success_rate + "%");
+		pla_xy_one.setText("");
+		pla_xy_two.setText("");
+		pla_xy_three.setText("");
+		pla_xy_four.setText("");
+		pla_xy_five.setText("");
+		comp_xy_one.setText("");
+		comp_xy_two.setText("");
+		comp_xy_three.setText("");
+		comp_xy_four.setText("");
+		comp_xy_five.setText("");
+		pla_res_one.setText("");
+		pla_res_two.setText("");
+		pla_res_three.setText("");
+		pla_res_four.setText("");
+		pla_res_five.setText("");
+		comp_res_one.setText("");
+		comp_res_two.setText("");
+		comp_res_three.setText("");
+		comp_res_four.setText("");
+		comp_res_five.setText("");
+		pla_type_one.setText("");
+		pla_type_two.setText("");
+		pla_type_three.setText("");
+		pla_type_four.setText("");
+		pla_type_five.setText("");
+		comp_type_one.setText("");
+		comp_type_two.setText("");
+		comp_type_three.setText("");
+		comp_type_four.setText("");
+		comp_type_five.setText("");
+		carrierCondition.setText("Not sunk!");
+		battleshipCondition.setText("Not Sunk!");
+		cruiserCondition.setText("Not Sunk!");
+		submarineCondition.setText("Not Sunk!");
+		destroyerCondition.setText("Not Sunk!");
 	}
 	
 	public void ExitButtonClicked() {
@@ -514,7 +792,7 @@ Grid computerGrid = new Grid();
 		carrierLabel.setLayoutX(20);
 	    carrierLabel.setLayoutY(80);
 	
-	    Label carrierCondition = new Label("Not sunk!");
+	   
 	    if (computerGrid.shipsSunk[0] == true)
 	    	carrierCondition.setText("Sunk!");
 		carrierCondition.setLayoutX(20);
@@ -525,7 +803,7 @@ Grid computerGrid = new Grid();
 		battleshipLabel.setLayoutX(20);
 	    battleshipLabel.setLayoutY(150);
 	    
-	    Label battleshipCondition = new Label("Not sunk!");
+	    
 	    if (computerGrid.shipsSunk[1] == true)
 	    	battleshipCondition.setText("Sunk!");
 		battleshipCondition.setLayoutX(20);
@@ -536,7 +814,7 @@ Grid computerGrid = new Grid();
 		cruiserLabel.setLayoutX(20);
 	    cruiserLabel.setLayoutY(220);
 	    
-	    Label cruiserCondition = new Label("Not sunk!");
+	    
 	    if (computerGrid.shipsSunk[2] == true)
 	    	cruiserCondition.setText("Sunk!");
 		cruiserCondition.setLayoutX(20);
@@ -547,7 +825,7 @@ Grid computerGrid = new Grid();
 		submarineLabel.setLayoutX(20);
 	    submarineLabel.setLayoutY(290);
 	    
-	    Label submarineCondition = new Label("Not sunk!");
+	    
 	    if (computerGrid.shipsSunk[3] == true)
 	    	submarineCondition.setText("Sunk!");
 		submarineCondition.setLayoutX(20);
@@ -558,7 +836,7 @@ Grid computerGrid = new Grid();
 		destroyerLabel.setLayoutX(20);
 	    destroyerLabel.setLayoutY(360);
 	    
-	    Label destroyerCondition = new Label("Not sunk!");
+	   
 	    if (computerGrid.shipsSunk[4] == true)
 	    	destroyerCondition.setText("Sunk!");
 		destroyerCondition.setLayoutX(20);

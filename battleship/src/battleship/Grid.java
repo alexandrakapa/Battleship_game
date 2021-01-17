@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 
 public class Grid {
-	Ship[][] ships = new Ship [10][10]; //we have a 10*10 grid with ships/empty ships
+	Ship[][] ships = new Ship [11][11]; //we have a 10*10 grid with ships/empty ships
 	public int shots; //shot of the user -> max 40
 	int sunkenShips; //the number of sunken ships ->max 5
 	int aliveShips;
@@ -34,6 +34,42 @@ public class Grid {
 		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship
 		immediateprev[0] = 30; //we put a very big number to help us out
+	}
+	
+	public void emptyGrid() { //used to empty the grid
+		for (Ship[] row : ships) 
+            Arrays.fill(row, new NoShip());  //initialize an array with empty spots
+		shots = 10; //we begin with 40 shots
+		sunkenShips = 0; //we begin with 0 sunken ships
+		aliveShips = 5; //we begin with 5 alive ships
+		points = 0;
+		firstsuccessfulhit=true;
+		types[0]=true; //We don't care about no ship
+		immediateprev[0] = 30; //we put a very big number to help us out
+		prevright = false;
+		m = 0;
+		n = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 41; j++)
+			{
+				computerLastFive[j][i] = 0;
+				playerLastFive[j][i] = 0;
+			}
+		}
+		for (int i = 0; i < 6; i++)
+		{
+			types[i]=false;
+		}
+		for (int i = 0; i < 5; i++)
+		{
+			shipsSunk[i]=false;
+		}
+		for (int i = 0; i < 3; i++)
+			{
+			start[i] = 0;
+			immediateprev[i]= 0; 
+			}
 	}
 	
 	
@@ -733,6 +769,8 @@ public class Grid {
 	m++;
 	if (shots == 0) System.out.println("Computer doesnt have any moves left!");
 }
+
+
 
 	
 }

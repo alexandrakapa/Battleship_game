@@ -18,54 +18,54 @@ public class BattleshipGame {
 	
 		Grid playerGrid = new Grid(); //Initialize the two grids
 		Grid computerGrid = new Grid();
-//		int i = 5;
-//		while ( i > 0) {
+		int i = 5;
+		while ( i > 0) {
 		try {   //place the players ships 
-			playerGrid.PlaceShip(1,7,0,1); //blue ship
-			playerGrid.PlaceShip(2,5,1,1); //purple
-			playerGrid.PlaceShip(3,6,6,2); //red
-			playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
-			playerGrid.PlaceShip(5,3,8,2); //green
+	//		playerGrid.PlaceShip(1,7,0,1); //blue ship
+	//		playerGrid.PlaceShip(2,5,1,1); //purple
+	//		playerGrid.PlaceShip(3,6,6,2); //red
+	//		playerGrid.PlaceShip(4,1,1,1); //yellow  //we have initialized our board
+	//		playerGrid.PlaceShip(5,3,8,2); //green
 					
 //		{
-//				Scanner in = new Scanner(System.in);
-//				System.out.print("Enter the coordinations (type,row,column,orientation) of the place you want to place a ship at : ");
-//				int type = in.nextInt();
-//				int row = in.nextInt();
-//				int column = in.nextInt();
-//				int orientation = in.nextInt();
-//				i--;
-//				playerGrid.PlaceShip(type, row, column, orientation);
+				Scanner in = new Scanner(System.in);
+				System.out.print("Enter the coordinations (type,row,column,orientation) of the place you want to place a ship at : ");
+				int type = in.nextInt();
+				int row = in.nextInt();
+				int column = in.nextInt();
+				int orientation = in.nextInt();
+			i--;
+				playerGrid.PlaceShip(type, row, column, orientation);
 				
 //			}
 			
 		}
 			catch(OversizeException e)                       
 			{
-			//	i=i+1; //in order to place again
+				i=i+1; //in order to place again
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
 			}
 			catch(OverlapTilesException o)
 			{
-			//	i=i+1; //in order to place again
+				i=i+1; //in order to place again
 				System.out.println("There is another ship here,sorry!");
 			}		
 			catch(AdjacentTilesException a)
 			{
-			//	i=i+1; //in order to place again
+				i=i+1; //in order to place again
 				System.out.println("You must keep a distance of a line -covid- here,sorry!");
 			}
 			catch(InvalidCountException k)
 			{
-			//	i=i+1; //in order to place again
+				i=i+1; //in order to place again
 				System.out.println("Ooops!You have already placed a ship of this type!");
 			}
 			catch(ArrayIndexOutOfBoundsException a)
 			{
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
-			//	i=i+1; //in order to place again
+				i=i+1; //in order to place again
 			}
-		//}
+		}
 		//System.out.println("Player has placed her ships!");
 		//computerGrid.computerPlaceShip();
 		try {
@@ -82,7 +82,7 @@ public class BattleshipGame {
 		{}
 		catch(AdjacentTilesException a)
 		{}
-		catch(InvalidCountException i)
+		catch(InvalidCountException k)
 		{}
 		catch(ArrayIndexOutOfBoundsException a)
 		{

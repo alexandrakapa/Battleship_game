@@ -102,7 +102,7 @@
             <Button fx:id="shootButton" layoutX="398.0" layoutY="664.0" mnemonicParsing="false" onMouseClicked="#ShootButtonClicked" text="Shoot!" />
             <TextField fx:id="column" layoutX="454.0" layoutY="606.0" promptText="Column" />
             <TextField fx:id="row" layoutX="228.0" layoutY="606.0" promptText="Row" />
-            <Text layoutX="181.0" layoutY="576.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter the coordinates of the place you want to shoot at!">
+            <Text fx:id="textmsg" layoutX="181.0" layoutY="576.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter the coordinates of the place you want to shoot at:">
                <font>
                   <Font size="17.0" />
                </font></Text>
