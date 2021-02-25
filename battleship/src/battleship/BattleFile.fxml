@@ -352,6 +352,11 @@
                   <Font name="System Italic" size="25.0" />
                </font>
             </Text>
+            <Text fx:id="moves" layoutX="703.0" layoutY="707.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moves left:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
          </children>
       </Pane>
    </center>

@@ -37,7 +37,7 @@ public int [][] comp_placement = new int [5][4]; //to keep the placement from th
 public TextField row;	
 public TextField column;
 public Button shootButton;
-public Text compact,plact,compon,plapon,comhit,plahit,msg,textmsg;
+public Text compact,plact,compon,plapon,comhit,plahit,msg,textmsg,moves;
 Rectangle [][] playergrid = new Rectangle[11][11]; //we use it for making the grid of the player
 Rectangle [][] computergrid = new Rectangle[11][11]; //we use it to make the grid of the computer
 public Rectangle p00,p01,p02,p03,p04,p05,p06,p07,p08,p09,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39,p40,p41,p42,p43,p44,p45,p46,p47,p48,p49,p50,p51,p52,p53,p54,p55,p56,p57,p58,p59,p60,p61,p62,p63,p64,p65,p66,p67,p68,p69;
@@ -46,9 +46,10 @@ public Rectangle c00,c01,c02,c03,c04,c05,c06,c07,c08,c09,c10,c11,c12,c13,c14,c15
 public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85,c86,c87,c88,c89,c90,c91,c92,c93,c94,c95,c96,c97,c98,c99;
 int k = 0; //to know the computers moves
 double com_successful = 0; //to help us count the success rate for computer
-//long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-long r = 1;
+long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
+long oldr = r;
 int j = 0; //to know the players moves
+int movesleft = 40;
 double pla_successful = 0; //to help us count the success rate for player
 double player_success_rate,computer_success_rate; //the percentages of successful hits
 Label errorLabel = new Label("");
@@ -137,6 +138,7 @@ Grid computerGrid = new Grid();
 		msg.setText("Please load a file!");
 		msg.setFill(Color.DARKGOLDENROD);
 		msg.setLayoutX(330);
+		moves.setText("Moves left: " + movesleft );
 	}
 	
 
@@ -151,6 +153,8 @@ Grid computerGrid = new Grid();
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
 			computerGrid.shoot(rowi, columni); //the player shoots
+			movesleft--;
+			moves.setText("Moves left: " + movesleft );
 			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and must make the computerGrid cell red
 			{
 				computergrid[rowi][columni].setFill(Color.DARKRED);
@@ -198,7 +202,7 @@ Grid computerGrid = new Grid();
 		else if (r==0) { //computer plays first
 			msg.setFill(Color.DODGERBLUE);
 			msg.setLayoutX(208);
-		if(k!=10) { //because the computer has started playing before
+		if(k!=40) { //because the computer has started playing before
 			playerGrid.computerShoot(); //the computer shoots
 			if (playerGrid.computerLastFive[k][2] == 1) //then we have a hit and musts make the playerGrid cell red
 			{
@@ -217,6 +221,8 @@ Grid computerGrid = new Grid();
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
 			computerGrid.shoot(rowi, columni); //the player shoots
+			movesleft--;
+			moves.setText("Moves left: " + movesleft );
 			if (computerGrid.playerLastFive[j][2] == 1) //then we have a hit and musts make the computerGrid cell red
 			{
 				computergrid[rowi][columni].setFill(Color.DARKRED);
@@ -354,6 +360,7 @@ Grid computerGrid = new Grid();
 					{
 					System.out.println("The computer has won because he has sunken all player's ships!");
 					msg.setFill(Color.DARKSLATEBLUE);
+					msg.setLayoutX(20);
 					msg.setText("The computer has won because he has sunken all player's ships!");
 					}
 				else if (computerGrid.sunkenShips == 5)
@@ -491,8 +498,6 @@ Grid computerGrid = new Grid();
 	}
 	
 	public void placeShips() {
-	//	for (int i = 0;i < 4; i++)
-		//	System.out.print(comp_placement[0][i]);
 		cleanGrid();
 		errorLabel.setText("");
 		try {   //place the players ships 
@@ -590,7 +595,7 @@ Grid computerGrid = new Grid();
 			for (int j = 0; j < 5; j++)
 			{
 				computerGrid.PlaceShip(comp_placement[j][0],comp_placement[j][1],comp_placement[j][2],comp_placement[j][3]);
-				if (comp_placement[j][3] == 1) //horizontal
+		/*		if (comp_placement[j][3] == 1) //horizontal
 				{
 					switch(comp_placement[j][0])
 					{
@@ -642,7 +647,7 @@ Grid computerGrid = new Grid();
 							
 					break;
 					}
-				}
+				}*/
 			}
 			
 		}
@@ -666,7 +671,7 @@ Grid computerGrid = new Grid();
 		}
 		catch(InvalidCountException k)
 		{
-			System.out.println("cOoops!You have already placed a ship of this type!");
+			System.out.println("Ooops!You have already placed a ship of this type!");
 			errorLabel.setText("!The file you uploaded isn't valid,try again with another one.");
 			cleanGrid();
 		}
@@ -704,6 +709,8 @@ Grid computerGrid = new Grid();
 		compon.setText("Computer's points: " + playerGrid.points);
 		comhit.setText("Computer's hit rate: " + computer_success_rate + "%");
 		plahit.setText("Player's hit rate: " + player_success_rate + "%");
+		movesleft=40;
+		moves.setText("Moves left: " + movesleft );
 		pla_xy_one.setText("");
 		pla_xy_two.setText("");
 		pla_xy_three.setText("");
@@ -739,6 +746,8 @@ Grid computerGrid = new Grid();
 		cruiserCondition.setText("Not Sunk!");
 		submarineCondition.setText("Not Sunk!");
 		destroyerCondition.setText("Not Sunk!");
+		r = oldr;
+		oldr = r;
 	}
 	
 	public void ExitButtonClicked() {

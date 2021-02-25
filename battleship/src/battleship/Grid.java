@@ -26,10 +26,12 @@ public class Grid {
 	boolean [] shipsSunk = new boolean[5]; //an array to show the condition of computer's ships, shipsSunk[0]:carrier,shipsSunk[1]:battleship,shipsSunk[2]:cruiser
 										 //shipsSunk[3]:submarine,shipsSunk[4]:destroyer, when we have true then that ships has been sunk  
 	
+	
+	
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 10; //we begin with 40 shots
+		shots = 40; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship
@@ -39,7 +41,7 @@ public class Grid {
 	public void emptyGrid() { //used to empty the grid
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 10; //we begin with 40 shots
+		shots = 40; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		points = 0;
