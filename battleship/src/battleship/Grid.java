@@ -25,13 +25,15 @@ public class Grid {
 	int n = 0; //counter for the above array
 	boolean [] shipsSunk = new boolean[5]; //an array to show the condition of computer's ships, shipsSunk[0]:carrier,shipsSunk[1]:battleship,shipsSunk[2]:cruiser
 										 //shipsSunk[3]:submarine,shipsSunk[4]:destroyer, when we have true then that ships has been sunk  
-	
+	boolean isAlreadyHit = false; //we want to see if the ship is already hit
+	boolean [] countedBeforeAsSunken = new boolean[6]; //this array holds information about whether a type of ship has been counted as sunken before
+														//i.e. if countedBeforeAsSunken[1] == true then we have already counted carrier as sunken
 	
 	
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 40; //we begin with 40 shots
+		shots = 4; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship
@@ -41,7 +43,7 @@ public class Grid {
 	public void emptyGrid() { //used to empty the grid
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 40; //we begin with 40 shots
+		shots = 18; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		points = 0;
@@ -462,7 +464,7 @@ public class Grid {
 	
 	
 	
-	void shoot(int shrow, int shcolumn)  //function to shoot at a ship given the position
+	void shoot(int shrow, int shcolumn) //function to shoot at a ship given the position
 	{ 
 		playerLastFive[n][0]=shrow;
 		playerLastFive[n][1]=shcolumn;
@@ -471,6 +473,7 @@ public class Grid {
 		int j = shrow;
 		int c = 0; //we initialize a counter
 		int p = 0; //the specific spot of the ship that is hit
+		int z = ships[shrow][shcolumn].getType(); //we want to keep the type of the ship
 		
 		if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
 		{
@@ -489,6 +492,7 @@ public class Grid {
 			if (ships[shrow][i].hit[p] == true )
 				{
 				System.out.println("Oh no,it is already hit!");
+				isAlreadyHit = true;
 				playerLastFive[n][2]=0; //we have a miss
 				playerLastFive[n][3]=0;
 				}
@@ -505,14 +509,17 @@ public class Grid {
 			int fcolumn = i;
 			for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
 			{
+				if (!countedBeforeAsSunken[z]) {	//that means we haven't counted that as sunken before
 				if (ships[shrow][i].hit[k]==false)    //we want to see if the ship is sunk
 				{										//we do that by checking the hit array
 					break;
 				}
 				c++;
+				}
 			}
 			if (c==ships[shrow][shcolumn].getLength()) {
 				System.out.println("You have sunken the ship!");
+				countedBeforeAsSunken[z] = true;
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
 				aliveShips--; //the number of alive ships
@@ -524,7 +531,7 @@ public class Grid {
 			
 		}
 		
-		if (ships[shrow][shcolumn].getOrientation() == 2)
+		if (ships[shrow][shcolumn].getOrientation() == 2)  //vertical
 		{
 			while (j != ships[shrow][shcolumn].getRow()) 	//we try to find the row column of the ship
 			{
@@ -535,6 +542,7 @@ public class Grid {
 			if (ships[j][shcolumn].hit[p] == true )
 				{
 				System.out.println("Oh no,it is already hit!");
+				isAlreadyHit = true;
 				playerLastFive[n][2]=0; //we have a miss
 				playerLastFive[n][3]=0;
 				}
@@ -550,14 +558,17 @@ public class Grid {
 			int fcolumn = shcolumn;
 			for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
 			{
+				if (!countedBeforeAsSunken[z]) {	//that means we haven't counted that as sunken before
 				if (ships[j][shcolumn].hit[k]==false)    //we want to see if the ship is sunk
 				{										//we do that by checking the hit array
 					break;
 				}
 				c++;
+				}
 			}
 			if (c==ships[shrow][shcolumn].getLength()) {
 				System.out.println("You have sunken the ship!");
+				countedBeforeAsSunken[z] = true;
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
 				aliveShips--; //the number of alive ships
@@ -576,6 +587,7 @@ public class Grid {
 	
 	void computerShoot()  //function when computer shoots
 { 
+		
     int shrow;
     int shcolumn;
 	
@@ -612,6 +624,7 @@ public class Grid {
 	int j = shrow;
 	int c = 0; //we initialize a counter
 	int p = 0; //the specific spot of the ship that is hit
+	int z = ships[shrow][shcolumn].getType(); //we want to keep the type of the ship
 	
 	if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
 	{
@@ -636,7 +649,7 @@ public class Grid {
 			}
 		}
 	}
-	if (ships[shrow][shcolumn].getOrientation() == 1)
+	if (ships[shrow][shcolumn].getOrientation() == 1) //horizontal
 	{
 		while (i != ships[shrow][shcolumn].getColumn()) 	//we try to find the first column of the ship
 		{
@@ -647,6 +660,7 @@ public class Grid {
 		if (ships[shrow][i].hit[p] == true )
 		{
 			System.out.println("Oh no,it is already hit!");
+			isAlreadyHit = true;
 			computerLastFive[m][2]=0; //we have a miss
 			computerLastFive[m][3]=0; 
 		}
@@ -681,14 +695,17 @@ public class Grid {
 		int fcolumn = i;
 		for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
 		{
+			if (!countedBeforeAsSunken[z]) {
 			if (ships[shrow][i].hit[k]==false)    //we want to see if the ship is sunk
 			{										//we do that by checking the hit array
 				break;
 			}
 			c++;
+			}
 		}
 		if (c==ships[shrow][shcolumn].getLength()) {
 			System.out.println("The computer has sunken the ship!");
+			countedBeforeAsSunken[z] = true;
 			firstsuccessfulhit = true; //now we try to find the next successful hit
 			immediateprev[0] = 30; //we want to make random shoots until we find a successful
 			prevright = false;
@@ -704,9 +721,7 @@ public class Grid {
 		
 	}
 	
-	
-	
-	if (ships[shrow][shcolumn].getOrientation() == 2)
+	if (ships[shrow][shcolumn].getOrientation() == 2)  //vertical
 	{
 		while (j != ships[shrow][shcolumn].getRow()) 	//we try to find the row column of the ship
 		{
@@ -717,12 +732,13 @@ public class Grid {
 		if (ships[j][shcolumn].hit[p] == true )
 		{
 			System.out.println("Oh no,it is already hit!");
+			isAlreadyHit = true;
 			computerLastFive[m][2]=0; //we have a miss
 			computerLastFive[m][3]=0; 	
 		}
 		
 		else {
-		System.out.println("!!Congrats!You hit a ship!");
+		System.out.println("!!The computer has hit a ship!");
 		computerLastFive[m][2]=1; //we have a hit
 		computerLastFive[m][3]=ships[shrow][shcolumn].getType();  
 		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
@@ -751,14 +767,17 @@ public class Grid {
 		int fcolumn = shcolumn;
 		for (int k = 0;k < ships[shrow][shcolumn].getLength();k++)
 		{
+			if (!countedBeforeAsSunken[z]) {
 			if (ships[j][shcolumn].hit[k]==false)    //we want to see if the ship is sunk
 			{										//we do that by checking the hit array
 				break;
 			}
 			c++;
+			}
 		}
 		if (c==ships[shrow][shcolumn].getLength()) {
-			System.out.println("You have sunken the ship!");
+			System.out.println("The computer has sunken the ship!");
+			countedBeforeAsSunken[z] = true;
 			sunkenShips++; //the number of sunken ships
 			aliveShips--; //the number of alive ships
 			points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
