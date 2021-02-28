@@ -47,7 +47,7 @@ public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85
 int k = 0; //to know the computers moves
 double com_successful = 0; //to help us count the success rate for computer
 //long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-long r = 0;
+long r = 1;
 long oldr = r;
 int j = 0; //to know the players moves
 int movesleft = 40;
@@ -222,13 +222,21 @@ Grid computerGrid = new Grid();
 		
 		catch (OutOfBoundsException o)
 		{
-			System.out.println("SOS");
-			msg.setLayoutX(40);
 			msg.setText("Your shot is out of bounds,try again!");
 			row.clear();
 			column.clear();
-			
+			playerGrid.shots++;
+			computerGrid.shots++;
+			movesleft++;
 		}
+		catch (Exception e)
+			{
+			msg.setText("Your shot is not a number,try again!");
+			row.clear();
+			column.clear();
+			playerGrid.shots++;
+			computerGrid.shots++;
+			}
 		}
 		
 		
@@ -309,7 +317,8 @@ Grid computerGrid = new Grid();
 			msg.setText("Your shot is out of bounds,try again!");
 			row.clear();
 			column.clear();
-			
+			playerGrid.shots++;
+			movesleft++;
 		}
 		}
 		//for the player pop up
