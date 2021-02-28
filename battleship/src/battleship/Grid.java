@@ -33,7 +33,7 @@ public class Grid {
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 4; //we begin with 40 shots
+		shots = 40; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		types[0]=true; //We don't care about no ship
@@ -43,7 +43,7 @@ public class Grid {
 	public void emptyGrid() { //used to empty the grid
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
-		shots = 18; //we begin with 40 shots
+		shots = 40; //we begin with 40 shots
 		sunkenShips = 0; //we begin with 0 sunken ships
 		aliveShips = 5; //we begin with 5 alive ships
 		points = 0;
@@ -464,8 +464,10 @@ public class Grid {
 	
 	
 	
-	void shoot(int shrow, int shcolumn) //function to shoot at a ship given the position
+	void shoot(int shrow, int shcolumn) throws OutOfBoundsException//function to shoot at a ship given the position
 	{ 
+		
+		if (shrow > 9 || shcolumn > 9) throw new OutOfBoundsException();
 		playerLastFive[n][0]=shrow;
 		playerLastFive[n][1]=shcolumn;
 		shots--; //when the user plays he has one less shot
@@ -618,6 +620,14 @@ public class Grid {
     
     computerLastFive[m][0]=shrow;
 	computerLastFive[m][1]=shcolumn;
+	if (m > 0 && computerLastFive[m-1][0] == shrow && computerLastFive[m-1][1] == shcolumn)
+	{
+		shrow = (int)(Math.random() * 10);
+        shcolumn = (int)(Math.random() * 10);
+        System.out.println("ALMOST STUCK");
+        computerLastFive[m][0]=shrow;
+    	computerLastFive[m][1]=shcolumn;
+	}
     System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
 	shots--; //when the user plays he has one less shot
 	int i = shcolumn;

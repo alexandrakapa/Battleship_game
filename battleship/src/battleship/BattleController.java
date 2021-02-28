@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.sun.glass.ui.Window;
-
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
@@ -49,7 +47,7 @@ public Rectangle c70,c71,c72,c73,c74,c75,c76,c77,c78,c79,c80,c81,c82,c83,c84,c85
 int k = 0; //to know the computers moves
 double com_successful = 0; //to help us count the success rate for computer
 //long r =  Math.round( Math.random() ); //we produce a random number (either 0 or 1) to see who plays first
-long r = 1;
+long r = 0;
 long oldr = r;
 int j = 0; //to know the players moves
 int movesleft = 40;
@@ -154,13 +152,16 @@ Grid computerGrid = new Grid();
 		if (r == 1) { //player plays first
 			msg.setFill(Color.DODGERBLUE);
 			msg.setLayoutX(140);
-			
+			try {
 			String rowc = row.getText();
 			String columnc = column.getText();
+				
 			int rowi = Integer.parseInt(rowc);
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
-			computerGrid.shoot(rowi, columni); //the player shoots
+			
+				computerGrid.shoot(rowi, columni); //the player shoots
+			
 			movesleft--;
 			moves.setText("Moves left: " + movesleft );
 			if (computerGrid.playerLastFive[j][2] == 1) //then player has a hit and must make the computerGrid cell red
@@ -187,8 +188,6 @@ Grid computerGrid = new Grid();
 				}
 				
 			}
-			
-			
 			row.setText("");
 			column.setText("");
 			playerGrid.computerShoot(); //the computer shoots
@@ -221,6 +220,19 @@ Grid computerGrid = new Grid();
 			j++;
 		}
 		
+		catch (OutOfBoundsException o)
+		{
+			System.out.println("SOS");
+			msg.setLayoutX(40);
+			msg.setText("Your shot is out of bounds,try again!");
+			row.clear();
+			column.clear();
+			
+		}
+		}
+		
+		
+		
 		else if (r==0) { //computer plays first
 			msg.setFill(Color.DODGERBLUE);
 			msg.setLayoutX(208);
@@ -240,12 +252,14 @@ Grid computerGrid = new Grid();
 			}
 			
 		}
+		try {
 			String rowc = row.getText();
 			String columnc = column.getText();
 			int rowi = Integer.parseInt(rowc);
 			int columni = Integer.parseInt(columnc);
 			System.out.println("You have shot at (" + rowi + "," + columni + ")");
-			computerGrid.shoot(rowi, columni); //the player shoots
+			
+				computerGrid.shoot(rowi, columni); //the player shoots
 			movesleft--;
 			moves.setText("Moves left: " + movesleft );
 			if (computerGrid.playerLastFive[j][2] == 1) //then we have a hit and musts make the computerGrid cell red
@@ -286,6 +300,17 @@ Grid computerGrid = new Grid();
 			System.out.println("-->Player has : " + computerGrid.points + " points.Number of shots left : " + computerGrid.shots + ". Number of sunken ships: " + computerGrid.sunkenShips + ".Number of alive ships: " + computerGrid.aliveShips+ ".Success rate: "+ player_success_rate);
 			k++;
 			j++;
+		}
+		
+		catch (OutOfBoundsException o)
+		{
+			System.out.println("SOS");
+			msg.setLayoutX(40);
+			msg.setText("Your shot is out of bounds,try again!");
+			row.clear();
+			column.clear();
+			
+		}
 		}
 		//for the player pop up
 		if (j - 5 >= 0 ) //the player has done 5+ moves
@@ -677,7 +702,7 @@ Grid computerGrid = new Grid();
 			{	
 				readyLabel.setText("");
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
-				suberrorLabel.setText("Some ships are placed outside of the 10*10 grid!");
+				suberrorLabel.setText("---Some ships are placed outside of the 10*10 grid!");
 				errorLabel.setText("The file you uploaded isn't valid!");
 				cleanGrid();
 			}
@@ -779,7 +804,7 @@ Grid computerGrid = new Grid();
 		{	
 			readyLabel.setText("");
 			System.out.println("Wrong placement!The grid is 10*10,sorry!");
-			suberrorLabel.setText("Some ships are placed outside of the 10*10 grid!");
+			suberrorLabel.setText("---Some ships are placed outside of the 10*10 grid!");
 			errorLabel.setText("The file you uploaded isn't valid!");
 			cleanGrid();
 		}

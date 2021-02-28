@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class BattleshipGame {
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws OutOfBoundsException {
 		//System.out.println("Battleship game has started with an empty grid!");
 	
 		Grid playerGrid = new Grid(); //Initialize the two grids
