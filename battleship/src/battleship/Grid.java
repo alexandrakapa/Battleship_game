@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 
 
+
 public class Grid {
 	Ship[][] ships = new Ship [11][11]; //we have a 10*10 grid with ships/empty ships
 	public int shots; //shot of the user -> max 40
@@ -28,7 +29,8 @@ public class Grid {
 	boolean isAlreadyHit = false; //we want to see if the ship is already hit
 	boolean [] countedBeforeAsSunken = new boolean[6]; //this array holds information about whether a type of ship has been counted as sunken before
 														//i.e. if countedBeforeAsSunken[1] == true then we have already counted carrier as sunken
-	
+	int [][] randomPlacement = new int[5][4]; //we want an array to keep the random placement values
+	boolean [][] hasComputerShoot = new boolean [11][11]; //an array to keep if the computer has shoot there,if true then yes
 	
 	public Grid() {
 		for (Ship[] row : ships) 
@@ -427,6 +429,10 @@ public class Grid {
 				int row = (int) Math.floor(Math.random() * 10); //will return a number between 0 and 9
 				int column = (int) Math.floor(Math.random() * 10); //will return a number between 0 and 9
 				int orientation = (int) ( Math.random() * 2 + 1); // will return either 1 or 2
+				randomPlacement[5-i][0] = c;
+				randomPlacement[5-i][1] = row;
+				randomPlacement[5-i][2] = column;
+				randomPlacement[5-i][3] = orientation;
 				i--;
 				PlaceShip(c, row, column, orientation);
 				System.out.println("Computer has placed ship (" + c + "," + row + "," + column + "," + orientation + ")");
@@ -620,7 +626,7 @@ public class Grid {
     
     computerLastFive[m][0]=shrow;
 	computerLastFive[m][1]=shcolumn;
-	if (m > 0 && computerLastFive[m-1][0] == shrow && computerLastFive[m-1][1] == shcolumn)
+	if (m > 0 && computerLastFive[m-1][0] == shrow && computerLastFive[m-1][1] == shcolumn || hasComputerShoot[shrow][shcolumn] == true)
 	{
 		shrow = (int)(Math.random() * 10);
         shcolumn = (int)(Math.random() * 10);
@@ -629,6 +635,7 @@ public class Grid {
     	computerLastFive[m][1]=shcolumn;
 	}
     System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
+    hasComputerShoot[shrow][shcolumn] = true;
 	shots--; //when the user plays he has one less shot
 	int i = shcolumn;
 	int j = shrow;

@@ -25,6 +25,7 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#StartButtonClicked" text="Start" />
                         <MenuItem mnemonicParsing="false" onAction="#LoadButtonClicked" text="Load" />
+                        <MenuItem mnemonicParsing="false" onAction="#ManualButtonClicked" text="Manual" />
                         <MenuItem mnemonicParsing="false" onAction="#ExitButtonClicked" text="Exit" />
                   </items>
                 </Menu>

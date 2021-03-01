@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
@@ -122,6 +123,32 @@ Label comp_xy_one = new Label(""); //for the 1st coordinates of the computer
 Label comp_res_one = new Label(""); //for the result or the computer
 Label comp_type_one = new Label(""); //for the type of the computer 
 
+
+Text manText = new Text("Please enter the coordinates to place your ships :");
+Text submanText = new Text("(type,row,column,orientation)");
+Text errormanText = new Text("");
+public TextField t1 = new TextField(); //for the manual popup
+public TextField t2 = new TextField();
+public TextField t3 = new TextField();
+public TextField t4 = new TextField();
+public TextField t5 = new TextField();
+public TextField r1 = new TextField();
+public TextField r2 = new TextField();
+public TextField r3 = new TextField();
+public TextField r4 = new TextField();
+public TextField r5 = new TextField();
+public TextField c1 = new TextField();
+public TextField c2 = new TextField();
+public TextField c3 = new TextField();
+public TextField c4 = new TextField();
+public TextField c5 = new TextField();
+public TextField o1 = new TextField();
+public TextField o2 = new TextField();
+public TextField o3 = new TextField();
+public TextField o4 = new TextField();
+public TextField o5 = new TextField();
+
+public TextField [][] manual = new TextField [5][4]; //to fix the sizes easily
 public Label [][] plaLastFive = new Label [5][3]; //for the last five player shots
 public Label [][] compLastFive = new Label [5][3]; //for the last five computer shots
 
@@ -135,14 +162,15 @@ Grid computerGrid = new Grid();
 		playerGridMap();
 		plaLastFiveMap(); //for the last five shoots
 		compLastFiveMap();
+		manualMap();
 		shootButton.setDisable(true); //we want them disabled at the start
 		row.setDisable(true);
 		column.setDisable(true);
 		textmsg.setText("");
-		msg.setText("Please load a file!");
+		msg.setText("Please load a file or enter the coordinates manually!");
 		msg.setFill(Color.DARKGOLDENROD);
-		msg.setFont(Font.font(null, FontWeight.BOLD, 30));
-		msg.setLayoutX(280);
+		msg.setFont(Font.font(null, FontWeight.BOLD, 25));
+		msg.setLayoutX(80);
 		moves.setText("Moves left: " + movesleft );
 	}
 	
@@ -485,7 +513,107 @@ Grid computerGrid = new Grid();
 	}
 	}
 	
+	public void ManualButtonClicked() {
+		cleanGrid();
+		for (int k = 0; k < 5; k++)
+		{
+			for (int i = 1; i < 4; i++)
+			{
+				manual[k][i].clear();
+			}
+		}
+		errormanText.setText("");
+		msg.setText("Please press Start button!");
+		msg.setFill(Color.DARKMAGENTA);
+		msg.setLayoutX(260);
+		Button okButton = new Button("Ready");
+		okButton.setLayoutY(430);
+		okButton.setLayoutX(200);
+		okButton.setPrefHeight(50);
+		okButton.setPrefWidth(80);
+		Button closeButton = new Button("Close");
+		closeButton.setLayoutY(430);
+		closeButton.setLayoutX(340);
+		closeButton.setPrefHeight(50);
+		closeButton.setPrefWidth(80);
+		manText.setLayoutY(60);
+		manText.setLayoutX(50);
+		submanText.setLayoutY(90);
+		submanText.setLayoutX(180);
+		errormanText.setFill(Color.RED);
+		errormanText.setLayoutY(520);
+		errormanText.setLayoutX(100);
+		errormanText.setFont(Font.font(null, FontWeight.BOLD, 15));
+		manText.setFont(Font.font(null, FontWeight.BOLD, 20));
+		submanText.setFont(Font.font(null, FontWeight.BOLD, 15));
+		
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				manual[i][j].setPrefWidth(40);
+				manual[i][j].setPrefHeight(40);
+				manual[i][j].setLayoutX(200+(60*j));
+				manual[i][j].setLayoutY(120+(60*i));
+				String typeString = String.valueOf(i+1);
+				manual[i][0].setText(typeString);
+				manual[i][0].setEditable(false);
+			}
+		}
+		okButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                    	for (int i = 0; i < 5; i++)
+                		{
+                			for (int j = 0; j < 4; j++)
+                			{
+                				try {
+                				String aString = manual[i][j].getText();
+                				pla_placement[i][j]=Integer.parseInt(aString);
+                				}
+                				catch (Exception z)
+                				{
+                				errormanText.setText("You can only enter numbers!");
+                				for (int k = 0; k < 5; k++)
+                				{
+                					for (int n = 1; n < 4; n++)
+                					{
+                						manual[k][n].clear();
+                					}
+                				}
+                				}
+                			}
+                		}
+                    	placeShips();
+                   }
+              });
+		
+		
+		Pane root = new Pane(okButton,closeButton,manText,errormanText,submanText,t1,t2,t3,t4,t5,r1,r2,r3,r4,r5,c1,c2,c3,c4,c5,o1,o2,o3,o4,o5);
+		root.setPrefSize(650, 550);
+
+		Parent content = root;
+		Scene scene = new Scene(content);
+
+		Stage window = new Stage();
+		
+		closeButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent e) {
+                    	window.close();
+                    }
+                    });
+		
+		window.setScene(scene);
+		window.setTitle("Manual");
+		// make window visible
+		window.show();
+	}
+
 	public void LoadButtonClicked() {
+
 	//	System.out.println("Load button clicked");
 		readyLabel.setText("");
 		errorLabel.setText("");
@@ -493,7 +621,7 @@ Grid computerGrid = new Grid();
 		cleanGrid();
 		msg.setText("Please press Start button!");
 		msg.setFill(Color.DARKMAGENTA);
-		msg.setLayoutX(220);
+		msg.setLayoutX(260);
 		file.setLayoutX(190);
 		file.setLayoutY(140);
 		file.setPrefWidth(60);
@@ -615,92 +743,72 @@ Grid computerGrid = new Grid();
 		errorLabel.setText("");
 		suberrorLabel.setText("");
 		errorLabel.setLayoutX(100);
+		errormanText.setFill(Color.FORESTGREEN);
+		errormanText.setText("The ships are placed,close this window and press start");
 		try {   //place the players ships 
 			for (int j = 0; j < 5; j++)
 			{
 				playerGrid.PlaceShip(pla_placement[j][0],pla_placement[j][1],pla_placement[j][2],pla_placement[j][3]);
-			/*	if (pla_placement[j][3] == 1) //horizontal
-				{
-					switch(pla_placement[j][0])
-					{
-					case 1: //so we have a carrier (blue)
-						for (int i = 0;i < 5;i++)
-							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.BLUE);	
-					break;	
-					case 2: //so we have a battleship (purple)
-						for (int i = 0;i < 4;i++)
-							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.VIOLET);
-					break;
-					case 3: //so we have a cruiser (orange)
-						for (int i = 0;i < 3;i++)
-							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.DARKORANGE);
-					break;
-					case 4: //so we have a submarine (yellow)
-						for (int i = 0;i < 3;i++)
-							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.YELLOW);
-					break;
-					case 5: //so we have a destroyer (green)
-						for (int i = 0;i < 2;i++)
-							playergrid[pla_placement[j][1]][pla_placement[j][2]+i].setFill(Color.GREEN);
-					break;
-					}
-				}
-				else if (pla_placement[j][3] == 2) //vertical
-				{
-					switch(pla_placement[j][0])
-					{
-					case 1: //so we have a carrier (blue)
-						for (int i = 0;i < 5;i++)
-							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.BLUE);	
-					break;	
-					case 2: //so we have a battleship (purple)
-						for (int i = 0;i < 4;i++)
-							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.VIOLET);
-					break;
-					case 3: //so we have a cruiser (orange)
-						for (int i = 0;i < 3;i++)
-							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.DARKORANGE);
-					break;
-					case 4: //so we have a submarine (yellow)
-						for (int i = 0;i < 3;i++)
-							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.YELLOW);
-					break;
-					case 5: //so we have a destroyer (green)
-						for (int i = 0;i < 2;i++)
-							playergrid[pla_placement[j][1]+i][pla_placement[j][2]].setFill(Color.GREEN);
-							
-					break;
-					}
-				}*/
 			}
 			
 		}
 			catch(OversizeException e)                       
 			{	
+				for (int k = 0; k < 5; k++)
+				{
+					for (int i = 1; i < 4; i++)
+					{
+						manual[k][i].clear();
+					}
+				}
 				readyLabel.setText("");
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
 				suberrorLabel.setText("Some ships are placed outside of the 10*10 grid!");
 				errorLabel.setText("The file you uploaded isn't valid!");
+				errormanText.setText("Some ships are placed outside of the 10*10 grid,try again!");
 				cleanGrid();
 			}
 			catch(OverlapTilesException o)
 			{
+				for (int k = 0; k < 5; k++)
+				{
+					for (int i = 1; i < 4; i++)
+					{
+						manual[k][i].clear();
+					}
+				}
 				readyLabel.setText("");
 				System.out.println("There is another ship here,sorry!");
 				suberrorLabel.setText("Some ships overlap!");
 				errorLabel.setText("The file you uploaded isn't valid!");
+				errormanText.setText("Some ships overlap,try again!");
 				cleanGrid();
 			}		
 			catch(AdjacentTilesException a)
 			{
+				for (int k = 0; k < 5; k++)
+				{
+					for (int i = 1; i < 4; i++)
+					{
+						manual[k][i].clear();
+					}
+				}
 				readyLabel.setText("");
 				System.out.println("You must keep a distance of a line -covid- here,sorry!");
 				suberrorLabel.setText("Some ships are adjacent!");
 				errorLabel.setText("The file you uploaded isn't valid!");
+				errormanText.setText("Some ships are adjacent,try again!");
 				cleanGrid();
 			}
 			catch(InvalidCountException k)
 			{
+				for (int l = 0; l < 5; l++)
+				{
+					for (int i = 1; i < 4; i++)
+					{
+						manual[l][i].clear();
+					}
+				}
 				readyLabel.setText("");
 				System.out.println("Ooops!You have already placed a ship of this type!");
 				suberrorLabel.setText("You have placed a ship twice!");
@@ -709,71 +817,38 @@ Grid computerGrid = new Grid();
 			}
 			catch(ArrayIndexOutOfBoundsException a)
 			{	
+				for (int k = 0; k < 5; k++)
+				{
+					for (int i = 1; i < 4; i++)
+					{
+						manual[k][i].clear();
+					}
+				}
 				readyLabel.setText("");
 				System.out.println("Wrong placement!The grid is 10*10,sorry!");
-				suberrorLabel.setText("---Some ships are placed outside of the 10*10 grid!");
+				suberrorLabel.setText("Some ships are placed outside of the 10*10 grid!");
 				errorLabel.setText("The file you uploaded isn't valid!");
+				errormanText.setText("Some ships are placed outside of the 10*10 grid,try again!");
 				cleanGrid();
 			}
-		System.out.println("Player has placed her ships!");
 		
+		System.out.println("Player has placed her ships!");
+
+		if (comp_placement[0][0] == 0) {  //that means we have placed the ships randomly
+				computerGrid.computerPlaceShip(); //place ships randomly
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					comp_placement[i][j] = computerGrid.randomPlacement[i][j];  
+				}
+			}
+		}
+		else {
 		try {   //place the computers ships 
 			for (int j = 0; j < 5; j++)
 			{
 				computerGrid.PlaceShip(comp_placement[j][0],comp_placement[j][1],comp_placement[j][2],comp_placement[j][3]); 
-				/*if (comp_placement[j][3] == 1) //horizontal  //
-				{
-					switch(comp_placement[j][0])
-					{
-					case 1: //so we have a carrier (blue)
-						for (int i = 0;i < 5;i++)
-							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.BLUE);	
-					break;	
-					case 2: //so we have a battleship (purple)
-						for (int i = 0;i < 4;i++)
-							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.VIOLET);
-					break;
-					case 3: //so we have a cruiser (orange)
-						for (int i = 0;i < 3;i++)
-							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.DARKORANGE);
-					break;
-					case 4: //so we have a submarine (yellow)
-						for (int i = 0;i < 3;i++)
-							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.YELLOW);
-					break;
-					case 5: //so we have a destroyer (green)
-						for (int i = 0;i < 2;i++)
-							computergrid[comp_placement[j][1]][comp_placement[j][2]+i].setFill(Color.GREEN);
-					break;
-					}
-				}
-				else if (comp_placement[j][3] == 2) //vertical
-				{
-					switch(comp_placement[j][0])
-					{
-					case 1: //so we have a carrier (blue)
-						for (int i = 0;i < 5;i++)
-							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.BLUE);	
-					break;	
-					case 2: //so we have a battleship (purple)
-						for (int i = 0;i < 4;i++)
-							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.VIOLET);
-					break;
-					case 3: //so we have a cruiser (orange)
-						for (int i = 0;i < 3;i++)
-							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.DARKORANGE);
-					break;
-					case 4: //so we have a submarine (yellow)
-						for (int i = 0;i < 3;i++)
-							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.YELLOW);
-					break;
-					case 5: //so we have a destroyer (green)
-						for (int i = 0;i < 2;i++)
-							computergrid[comp_placement[j][1]+i][comp_placement[j][2]].setFill(Color.GREEN);
-							
-					break;
-					}
-				}  */ //
 			}
 			
 		}
@@ -816,6 +891,7 @@ Grid computerGrid = new Grid();
 			suberrorLabel.setText("---Some ships are placed outside of the 10*10 grid!");
 			errorLabel.setText("The file you uploaded isn't valid!");
 			cleanGrid();
+		}
 		}
 		System.out.println("Computer has placed his ships!");
 		
@@ -1543,6 +1619,8 @@ Grid computerGrid = new Grid();
 	}
 	
 	void plaLastFiveMap() {
+
+
 		plaLastFive[0][0] = pla_xy_one;
 		plaLastFive[0][1] = pla_res_one;
 		plaLastFive[0][2] = pla_type_one;
@@ -1560,6 +1638,9 @@ Grid computerGrid = new Grid();
 		plaLastFive[4][2] = pla_type_five;
 		
 	}
+	
+	
+	
 	void compLastFiveMap() {
 		compLastFive[0][0] = comp_xy_one;
 		compLastFive[0][1] = comp_res_one;
@@ -1578,4 +1659,33 @@ Grid computerGrid = new Grid();
 		compLastFive[4][2] = comp_type_five;
 		
 	}
+	void manualMap() { //to organize them easily on manual popup
+		manual[0][0] = t1;
+		manual[0][1] = r1;
+		manual[0][2] = c1;
+		manual[0][3] = o1;
+		manual[1][0] = t2;
+		manual[1][1] = r2;
+		manual[1][2] = c2;
+		manual[1][3] = o2;
+		manual[2][0] = t3;
+		manual[2][1] = r3;
+		manual[2][2] = c3;
+		manual[2][3] = o3;
+		manual[3][0] = t4;
+		manual[3][1] = r4;
+		manual[3][2] = c4;
+		manual[3][3] = o4;
+		manual[4][0] = t5;
+		manual[4][1] = r5;
+		manual[4][2] = c5;
+		manual[4][3] = o5;
+	}
 }
+	
+	
+	
+	
+	
+	
+	
