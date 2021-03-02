@@ -32,6 +32,10 @@ public class Grid {
 	int [][] randomPlacement = new int[5][4]; //we want an array to keep the random placement values
 	boolean [][] hasComputerShoot = new boolean [11][11]; //an array to keep if the computer has shoot there,if true then yes
 	
+	
+	/**
+	 * The constructor of the Grid
+	 */
 	public Grid() {
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
@@ -42,6 +46,10 @@ public class Grid {
 		immediateprev[0] = 30; //we put a very big number to help us out
 	}
 	
+	
+	/*
+	 * Initializes an empty grid
+	 */
 	public void emptyGrid() { //used to empty the grid
 		for (Ship[] row : ships) 
             Arrays.fill(row, new NoShip());  //initialize an array with empty spots
@@ -78,7 +86,13 @@ public class Grid {
 			}
 	}
 	
-	
+	/*
+	 * A function to place the ships
+	 * @param type 	 		the type of the ship we want to place
+	 * @param row 	 		the row of the ship we want to place
+	 * @param column 		the column of the ship we want to place
+	 * @param orientation	the orientation of the ship we want to place
+	 */
 	public void PlaceShip(int type, int row, int column, int orientation) throws OversizeException, OverlapTilesException,AdjacentTilesException,InvalidCountException{
 		if (types[type]==true) throw new InvalidCountException();//"Ooops!You have already placed a ship of type " + type + "!");
 		int frow = row;  //we keep the variables because they change
@@ -419,6 +433,10 @@ public class Grid {
 	}
 
 
+	/*
+	 * A function for computer to place the ships randomly
+	 * 
+	 */
 	public void computerPlaceShip() {
 		int i = 5;
 		int c = 1; //we want a counter for the type of the ship
@@ -469,7 +487,11 @@ public class Grid {
 	}
 	
 	
-	
+	/*
+	 * A function for shooting at specific cell of the grid
+	 * @param shrow		the row of the cell
+	 * @param shcolumn	the column of the cell
+	 */
 	void shoot(int shrow, int shcolumn) throws OutOfBoundsException//function to shoot at a ship given the position
 	{ 
 		
@@ -592,7 +614,9 @@ public class Grid {
 	}
 
 
-	
+	/*
+	 * A function for the computer to shoot at a random cell 
+	 */
 	void computerShoot()  //function when computer shoots
 { 
 		
