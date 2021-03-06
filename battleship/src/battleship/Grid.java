@@ -453,29 +453,24 @@ public class Grid {
 				randomPlacement[5-i][3] = orientation;
 				i--;
 				PlaceShip(c, row, column, orientation);
-				System.out.println("Computer has placed ship (" + c + "," + row + "," + column + "," + orientation + ")");
 				c++;
 			}
 
 			catch(OversizeException e)                       
 			{
 				i=i+1; //in order to place again
-			//	System.out.println("Wrong placement!The grid is 10*10,sorry!");
 			}
 			catch(OverlapTilesException o)
 			{
 				i=i+1; //in order to place again
-			//	System.out.println("There is another ship here,sorry!");
 			}		
 			catch(AdjacentTilesException a)
 			{
 				i=i+1; //in order to place again
-			//	System.out.println("You must keep a distance of a line -covid- here,sorry!");
 			}
 			catch(InvalidCountException k)
 			{
 				i=i+1; //in order to place again
-			//	System.out.println("Ooops!You have already placed a ship of this type!");
 			}
 			catch(ArrayIndexOutOfBoundsException a)
 			{
@@ -507,7 +502,6 @@ public class Grid {
 		
 		if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
 		{
-			System.out.println("I am sorry,this is an empty spot!");
 			playerLastFive[n][2]=0; //we have a miss
 			playerLastFive[n][3]=0;
 		}
@@ -521,14 +515,12 @@ public class Grid {
 			}
 			if (ships[shrow][i].hit[p] == true )
 				{
-				System.out.println("Oh no,it is already hit!");
 				isAlreadyHit = true;
 				playerLastFive[n][2]=0; //we have a miss
 				playerLastFive[n][3]=0;
 				}
 			
 			else {
-			System.out.println("Congrats!You hit a ship!"); 
 			playerLastFive[n][2]=1; //we have a hit
 			playerLastFive[n][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
@@ -548,7 +540,6 @@ public class Grid {
 				}
 			}
 			if (c==ships[shrow][shcolumn].getLength()) {
-				System.out.println("You have sunken the ship!");
 				countedBeforeAsSunken[z] = true;
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
@@ -571,13 +562,11 @@ public class Grid {
 			}
 			if (ships[j][shcolumn].hit[p] == true )
 				{
-				System.out.println("Oh no,it is already hit!");
 				isAlreadyHit = true;
 				playerLastFive[n][2]=0; //we have a miss
 				playerLastFive[n][3]=0;
 				}
 			else {
-			System.out.println("Congrats!You hit a ship!");
 			playerLastFive[n][2]=1; //we have a hit
 			playerLastFive[n][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 			points += ships[shrow][shcolumn].hitPoints; //we add the points of hit 
@@ -597,7 +586,6 @@ public class Grid {
 				}
 			}
 			if (c==ships[shrow][shcolumn].getLength()) {
-				System.out.println("You have sunken the ship!");
 				countedBeforeAsSunken[z] = true;
 				points += ships[frow][fcolumn].sinkingPoints; //the ship has been sunk so the user earns the points
 				sunkenShips++; //the number of sunken ships
@@ -610,7 +598,6 @@ public class Grid {
 			
 		}
 		n++;
-		if (shots == 0) System.out.println("This player doesnt have any moves left!");
 	}
 
 
@@ -654,11 +641,9 @@ public class Grid {
 	{
 		shrow = (int)(Math.random() * 10);
         shcolumn = (int)(Math.random() * 10);
-        System.out.println("ALMOST STUCK");
         computerLastFive[m][0]=shrow;
     	computerLastFive[m][1]=shcolumn;
 	}
-    System.out.println("Computer has shoot at (" + shrow + "," + shcolumn + ")");
     hasComputerShoot[shrow][shcolumn] = true;
 	shots--; //when the user plays he has one less shot
 	int i = shcolumn;
@@ -669,7 +654,6 @@ public class Grid {
 	
 	if (ships[shrow][shcolumn].getType() == 0 ) 		//The player hit an empty spot
 	{
-		System.out.println("The computer has hit an empty spot!");
 		computerLastFive[m][2]=0; //we have a miss
 		computerLastFive[m][3]=0;
 		if (prevright == true) //that means that our previous hit was a success so now we are at the end of the ship
@@ -700,14 +684,12 @@ public class Grid {
 		}
 		if (ships[shrow][i].hit[p] == true )
 		{
-			System.out.println("Oh no,it is already hit!");
 			isAlreadyHit = true;
 			computerLastFive[m][2]=0; //we have a miss
 			computerLastFive[m][3]=0; 
 		}
 		
 		else {
-		System.out.println("!!The computer has hit a ship!");
 		computerLastFive[m][2]=1; //we have a hit
 		computerLastFive[m][3]=ships[shrow][shcolumn].getType(); //to get the type of the ship
 		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
@@ -745,7 +727,6 @@ public class Grid {
 			}
 		}
 		if (c==ships[shrow][shcolumn].getLength()) {
-			System.out.println("The computer has sunken the ship!");
 			countedBeforeAsSunken[z] = true;
 			firstsuccessfulhit = true; //now we try to find the next successful hit
 			immediateprev[0] = 30; //we want to make random shoots until we find a successful
@@ -772,14 +753,12 @@ public class Grid {
 		}
 		if (ships[j][shcolumn].hit[p] == true )
 		{
-			System.out.println("Oh no,it is already hit!");
 			isAlreadyHit = true;
 			computerLastFive[m][2]=0; //we have a miss
 			computerLastFive[m][3]=0; 	
 		}
 		
 		else {
-		System.out.println("!!The computer has hit a ship!");
 		computerLastFive[m][2]=1; //we have a hit
 		computerLastFive[m][3]=ships[shrow][shcolumn].getType();  
 		if (firstsuccessfulhit == true ) //if it is the first successful we want to keep the coordinates as start [x,y,z
@@ -817,7 +796,6 @@ public class Grid {
 			}
 		}
 		if (c==ships[shrow][shcolumn].getLength()) {
-			System.out.println("The computer has sunken the ship!");
 			countedBeforeAsSunken[z] = true;
 			sunkenShips++; //the number of sunken ships
 			aliveShips--; //the number of alive ships
@@ -829,7 +807,6 @@ public class Grid {
 		
 	}
 	m++;
-	if (shots == 0) System.out.println("Computer doesnt have any moves left!");
 }
 
 
